@@ -137,6 +137,7 @@ const state = {
   readyConfirmed: false,
   firstTaskOpened: false,
   firstTaskCompleted: false,
+  firstTaskAttempts: 0,
   sound: true
 };
 
@@ -343,6 +344,7 @@ function renderAccess(errorMessage = "") {
     state.readyConfirmed = false;
     state.firstTaskOpened = false;
     state.firstTaskCompleted = false;
+    state.firstTaskAttempts = 0;
     saveState();
     vibrate([40, 25, 90]);
     tone("confirm");
@@ -538,59 +540,94 @@ function renderReady(identity) {
   });
 }
 
-function renderFirstTask(identity) {
+function renderFirstTask(identity, message = "") {
   state.screen = "first-task";
   state.readyConfirmed = true;
   state.firstTaskOpened = true;
   saveState();
 
   const completed = state.firstTaskCompleted;
-  setStatus(completed ? "ZADANIE 01 WYKONANE" : "ZADANIE 01 AKTYWNE");
+  const showHint = !completed && state.firstTaskAttempts >= 2;
+  setStatus(completed ? "LOKALIZACJA ODSZYFROWANA" : "ZADANIE 01 AKTYWNE");
 
   screen.innerHTML = `
     <section class="card first-task-card fade-in accent-border-${identity.accent}">
       <div class="task-header">
         <div>
           <p class="kicker">Operacja Project Groom</p>
-          <h2>Pierwsze zadanie</h2>
+          <h2>Droga do pierwszej misji</h2>
         </div>
         <div class="task-number">01</div>
       </div>
 
       <div class="operation-progress" aria-label="Postęp operacji">
-        <span style="width:${completed ? "10%" : "3%"}"></span>
+        <span style="width:${completed ? "10%" : "4%"}"></span>
       </div>
       <div class="progress-meta">
         <span>OPERACJA THE GROOM</span>
-        <strong>${completed ? "10%" : "START"}</strong>
+        <strong>${completed ? "TROP ODKRYTY" : "SZYFR"}</strong>
       </div>
 
       <article class="group-mission ${completed ? "is-complete" : ""}">
         <div class="mission-classification">
           <span>ZADANIE ZESPOŁOWE</span>
-          <strong>${completed ? "WYKONANE" : "AKTYWNE"}</strong>
+          <strong>${completed ? "ODSZYFROWANE" : "AKTYWNE"}</strong>
         </div>
 
         <p class="block-label">KRYPTONIM ZADANIA</p>
-        <h3>AKTYWACJA ZESPOŁU</h3>
+        <h3>PIĘĆ ARTEFAKTÓW</h3>
 
-        <div class="task-instruction">
-          <span class="instruction-number">1</span>
-          <p>Zbierzcie się wszyscy przy panu młodym.</p>
-        </div>
-        <div class="task-instruction">
-          <span class="instruction-number">2</span>
-          <p>Każdy agent kolejno podaje wyłącznie swój kryptonim.</p>
-        </div>
-        <div class="task-instruction">
-          <span class="instruction-number">3</span>
-          <p>Pan młody kończy odprawę słowami: <strong>„Zespół gotowy.”</strong></p>
+        <p class="mission-intro">
+          Agent 001 pozostawił pięć śladów związanych z przygodami Indiany Jonesa.
+          Ułóż filmy chronologicznie, a następnie z każdego tytułu wybierz
+          <strong>pierwszą literę wyróżnionego słowa</strong>.
+        </p>
+
+        <div class="film-sequence" aria-label="Filmy Indiana Jones w kolejności premier">
+          <div><span>1981</span><p><strong>Raiders</strong> of the Lost Ark</p></div>
+          <div><span>1984</span><p><strong>Temple</strong> of Doom</p></div>
+          <div><span>1989</span><p>The Last <strong>Crusade</strong></p></div>
+          <div><span>2008</span><p><strong>Kingdom</strong> of the Crystal Skull</p></div>
+          <div><span>2023</span><p><strong>Dial</strong> of Destiny</p></div>
         </div>
 
-        <div class="mission-rule">
-          <span>WARUNEK ZALICZENIA</span>
-          <p>W odprawie muszą uczestniczyć wszystkie osoby. Nie ujawniajcie swoich specjalizacji ani treści profili.</p>
-        </div>
+        ${completed ? `
+          <div class="decoded-location">
+            <div class="decoded-stamp">DOSTĘP PRZYZNANY</div>
+            <p class="block-label">ODSZYFROWANA LOKALIZACJA</p>
+            <h3>PIERWSZA MISJA CZEKA U M</h3>
+            <p>Podejdźcie całą grupą do organizatora i podajcie hasło:</p>
+            <div class="final-password">RTCKD</div>
+            <p class="location-note">M przekaże Wam pierwszy fizyczny pakiet misji.</p>
+          </div>
+        ` : `
+          <form class="cipher-form" id="firstTaskForm" autocomplete="off">
+            <label for="firstTaskCode">WPROWADŹ PIĘCIOLITEROWY KOD</label>
+            <input
+              id="firstTaskCode"
+              name="firstTaskCode"
+              type="text"
+              maxlength="5"
+              inputmode="text"
+              autocapitalize="characters"
+              spellcheck="false"
+              placeholder="•••••"
+              aria-describedby="cipherFeedback"
+            >
+            <button class="primary-button" type="submit">Sprawdź kod</button>
+          </form>
+
+          <div id="cipherFeedback" class="cipher-feedback ${message ? "is-visible" : ""}">
+            ${message}
+          </div>
+
+          ${showHint ? `
+            <div class="mission-hint">
+              <span>PODPOWIEDŹ OD M</span>
+              <p>Nie używaj pierwszych liter całych tytułów. Liczą się wyłącznie wyróżnione słowa — dokładnie w kolejności lat.</p>
+            </div>
+          ` : ""}
+        `}
       </article>
 
       ${completed ? `
@@ -598,28 +635,56 @@ function renderFirstTask(identity) {
           <span class="success-mark">✓</span>
           <div>
             <small>POTWIERDZENIE SYSTEMOWE</small>
-            <strong>Zespół został aktywowany</strong>
+            <strong>Odnaleziono drogę do pierwszej misji</strong>
           </div>
         </div>
-      ` : `
-        <div class="actions">
-          ${button("Zadanie wykonane", "complete-task")}
-        </div>
-      `}
+      ` : ""}
 
       <div class="actions">
         ${button("Otwórz profil agenta", "identity", "secondary")}
       </div>
     </section>`;
 
-  bindActions({
-    "complete-task": () => {
-      state.firstTaskCompleted = true;
+  if (!completed) {
+    const form = document.getElementById("firstTaskForm");
+    const input = document.getElementById("firstTaskCode");
+
+    input.addEventListener("input", event => {
+      event.target.value = event.target.value
+        .toUpperCase()
+        .replace(/[^A-Z]/g, "")
+        .slice(0, 5);
+    });
+
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+      const answer = input.value.trim().toUpperCase();
+
+      if (answer === "RTCKD") {
+        state.firstTaskCompleted = true;
+        saveState();
+        vibrate([45, 25, 45, 25, 110]);
+        tone("reveal");
+        renderFirstTask(identity);
+        return;
+      }
+
+      state.firstTaskAttempts = (state.firstTaskAttempts || 0) + 1;
       saveState();
-      vibrate([45, 25, 45, 25, 100]);
-      tone("reveal");
-      renderFirstTask(identity);
-    },
+      vibrate([70, 45, 70]);
+      tone("error");
+      renderFirstTask(
+        identity,
+        answer.length < 5
+          ? "Kod musi zawierać dokładnie pięć liter."
+          : "Kod odrzucony. Sprawdź kolejność filmów i spróbuj ponownie."
+      );
+    });
+
+    setTimeout(() => input.focus(), 120);
+  }
+
+  bindActions({
     identity: () => renderIdentityReveal(identity)
   });
 }
@@ -684,6 +749,7 @@ function resetIdentity() {
     readyConfirmed: false,
     firstTaskOpened: false,
     firstTaskCompleted: false,
+    firstTaskAttempts: 0,
     sound: true
   });
   soundIcon.textContent = "◖";
@@ -699,7 +765,7 @@ renderBoot();
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
     try {
-      const registration = await navigator.serviceWorker.register("./service-worker.js?v=031", {
+      const registration = await navigator.serviceWorker.register("./service-worker.js?v=032", {
         updateViaCache: "none"
       });
       await registration.update();

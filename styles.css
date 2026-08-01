@@ -498,3 +498,187 @@ h2 { font-size: clamp(31px, 8vw, 55px); letter-spacing: -.027em; }
     padding: 15px;
   }
 }
+
+
+/* ===== v0.3.2 — SZYFR INDIANA JONES ===== */
+
+.mission-intro {
+  margin: 0 0 18px;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.mission-intro strong {
+  color: var(--text);
+}
+
+.film-sequence {
+  display: grid;
+  gap: 8px;
+  margin: 18px 0 22px;
+}
+
+.film-sequence > div {
+  display: grid;
+  grid-template-columns: 54px 1fr;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255,255,255,.085);
+  background: rgba(255,255,255,.025);
+}
+
+.film-sequence span {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: #d7bb79;
+}
+
+.film-sequence p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--muted);
+}
+
+.film-sequence strong {
+  color: var(--text);
+  letter-spacing: .025em;
+}
+
+.cipher-form {
+  display: grid;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.cipher-form label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .12em;
+  color: var(--muted);
+}
+
+.cipher-form input {
+  width: 100%;
+  height: 64px;
+  padding: 0 16px;
+  border: 1px solid rgba(210,176,111,.32);
+  border-radius: 0;
+  outline: none;
+  background: rgba(0,0,0,.28);
+  font-family: var(--mono);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: .42em;
+  text-align: center;
+  text-transform: uppercase;
+  color: #ead39d;
+  box-shadow: inset 0 0 28px rgba(210,176,111,.035);
+}
+
+.cipher-form input:focus {
+  border-color: rgba(234,211,157,.7);
+  box-shadow: 0 0 0 3px rgba(210,176,111,.07), inset 0 0 28px rgba(210,176,111,.05);
+}
+
+.cipher-form input::placeholder {
+  color: rgba(255,255,255,.18);
+}
+
+.cipher-feedback {
+  min-height: 0;
+  margin-top: 10px;
+  padding: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #e59090;
+}
+
+.cipher-feedback.is-visible {
+  min-height: 42px;
+  padding: 11px 12px;
+  border: 1px solid rgba(210,90,90,.25);
+  background: rgba(210,90,90,.06);
+}
+
+.mission-hint {
+  margin-top: 14px;
+  padding: 13px 14px;
+  border-left: 2px solid rgba(210,176,111,.7);
+  background: rgba(210,176,111,.055);
+}
+
+.mission-hint span {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .12em;
+  color: #dcc183;
+}
+
+.mission-hint p {
+  margin: 7px 0 0;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.decoded-location {
+  margin-top: 21px;
+  padding: 19px 16px;
+  border: 1px solid rgba(91,199,139,.3);
+  background:
+    linear-gradient(180deg, rgba(91,199,139,.075), rgba(91,199,139,.025));
+  text-align: center;
+}
+
+.decoded-stamp {
+  display: inline-block;
+  margin-bottom: 20px;
+  padding: 6px 10px;
+  border: 1px solid rgba(91,199,139,.45);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .14em;
+  color: #75d9a5;
+  transform: rotate(-1deg);
+}
+
+.decoded-location h3 {
+  margin: 7px 0 12px;
+  font-size: clamp(24px, 7.6vw, 35px);
+  color: #f2ebdc;
+}
+
+.decoded-location > p:not(.block-label) {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.final-password {
+  margin: 16px auto;
+  padding: 12px 15px;
+  max-width: 220px;
+  border: 1px solid rgba(210,176,111,.42);
+  background: rgba(0,0,0,.28);
+  font-family: var(--mono);
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: .28em;
+  color: #ead39d;
+}
+
+.location-note {
+  font-size: 11px !important;
+}
+
+@media (max-width: 420px) {
+  .cipher-form input {
+    font-size: 24px;
+    letter-spacing: .34em;
+  }
+}
