@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#11100d" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Archiwum 01" />
+  <title>Archiwum 01</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app" class="app-shell">
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+    <div class="grain"></div>
+
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">◆</span>
+        <div>
+          <span class="eyebrow">ARCHIWUM TERENOWE</span>
+          <strong>PROTOKÓŁ 01</strong>
+        </div>
+      </div>
+      <button id="soundToggle" class="icon-button" aria-label="Włącz lub wyłącz dźwięk">
+        <span id="soundIcon">◖</span>
+      </button>
+    </header>
+
+    <main id="screen" class="screen" aria-live="polite"></main>
+
+    <footer class="footer">
+      <span id="statusText">SYSTEM GOTOWY</span>
+      <span id="clock">--:--</span>
+    </footer>
+  </div>
+
+  <noscript>Ta aplikacja wymaga włączonego JavaScriptu.</noscript>
+  <script src="app.js"></script>
+</body>
+</html>
