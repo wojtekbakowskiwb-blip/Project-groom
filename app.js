@@ -1,8 +1,8 @@
 const CONFIG = {
   appName: "PROJECT GROOM",
   handlerCodename: "M",
-  storageKey: "project-groom-v02-agent",
-  introDelayMs: 1500,
+  storageKey: "project-groom-v031-agent",
+  introDelayMs: 1200,
   codeLength: 8
 };
 
@@ -134,6 +134,9 @@ const state = {
   identityId: "",
   authenticatedAt: null,
   briefingAccepted: false,
+  readyConfirmed: false,
+  firstTaskOpened: false,
+  firstTaskCompleted: false,
   sound: true
 };
 
@@ -337,6 +340,9 @@ function renderAccess(errorMessage = "") {
     state.identityId = identity.id;
     state.authenticatedAt = new Date().toISOString();
     state.briefingAccepted = false;
+    state.readyConfirmed = false;
+    state.firstTaskOpened = false;
+    state.firstTaskCompleted = false;
     saveState();
     vibrate([40, 25, 90]);
     tone("confirm");
@@ -488,28 +494,133 @@ function renderReady(identity) {
   state.screen = "ready";
   state.briefingAccepted = true;
   saveState();
-  setStatus("AGENT W GOTOWOŚCI");
+  setStatus("OCZEKIWANIE NA GOTOWOŚĆ");
+
   screen.innerHTML = `
     <section class="card ready-card fade-in accent-border-${identity.accent}">
       <div class="ready-pulse"><span>${identity.symbol}</span></div>
-      <p class="kicker">Połączenie ustanowione</p>
-      <h2>${identity.codename}<br>jest w gotowości.</h2>
-      <p class="lead">Nie zamykaj aplikacji. Pierwsza właściwa transmisja zostanie dodana w kolejnym module.</p>
+      <p class="kicker">Protokół rozpoczęcia operacji</p>
+      <h2>${identity.codename},<br>potwierdź gotowość.</h2>
+      <p class="lead">Gdy wszyscy agenci aktywują swoje profile i potwierdzą gotowość, rozpoczyna się pierwsze wspólne zadanie.</p>
+
       <div class="agent-chip">
         <span class="online-dot"></span>
-        <div><small>AKTYWNA TOŻSAMOŚĆ</small><strong>${identity.title}</strong></div>
+        <div>
+          <small>AKTYWNA TOŻSAMOŚĆ</small>
+          <strong>${identity.title}</strong>
+        </div>
       </div>
+
+      <div class="readiness-checklist">
+        <div><span>01</span><p>Tożsamość została aktywowana</p><strong>✓</strong></div>
+        <div><span>02</span><p>Profil agenta został odczytany</p><strong>✓</strong></div>
+        <div><span>03</span><p>Gotowość do rozpoczęcia gry</p><strong>—</strong></div>
+      </div>
+
       <div class="actions">
+        ${button("Jestem gotowy", "confirm-ready")}
         ${button("Otwórz dossier agenta", "identity", "secondary")}
-        ${button("Wróć do przekazu M", "briefing", "secondary")}
       </div>
       <button class="reset-link" data-action="reset">Zmień uczestnika na tym urządzeniu</button>
     </section>`;
 
   bindActions({
+    "confirm-ready": () => {
+      state.readyConfirmed = true;
+      state.firstTaskOpened = true;
+      saveState();
+      vibrate([35, 30, 80]);
+      tone("confirm");
+      renderFirstTask(identity);
+    },
     identity: () => renderIdentityReveal(identity),
-    briefing: () => renderBriefing(identity),
     reset: confirmReset
+  });
+}
+
+function renderFirstTask(identity) {
+  state.screen = "first-task";
+  state.readyConfirmed = true;
+  state.firstTaskOpened = true;
+  saveState();
+
+  const completed = state.firstTaskCompleted;
+  setStatus(completed ? "ZADANIE 01 WYKONANE" : "ZADANIE 01 AKTYWNE");
+
+  screen.innerHTML = `
+    <section class="card first-task-card fade-in accent-border-${identity.accent}">
+      <div class="task-header">
+        <div>
+          <p class="kicker">Operacja Project Groom</p>
+          <h2>Pierwsze zadanie</h2>
+        </div>
+        <div class="task-number">01</div>
+      </div>
+
+      <div class="operation-progress" aria-label="Postęp operacji">
+        <span style="width:${completed ? "10%" : "3%"}"></span>
+      </div>
+      <div class="progress-meta">
+        <span>OPERACJA THE GROOM</span>
+        <strong>${completed ? "10%" : "START"}</strong>
+      </div>
+
+      <article class="group-mission ${completed ? "is-complete" : ""}">
+        <div class="mission-classification">
+          <span>ZADANIE ZESPOŁOWE</span>
+          <strong>${completed ? "WYKONANE" : "AKTYWNE"}</strong>
+        </div>
+
+        <p class="block-label">KRYPTONIM ZADANIA</p>
+        <h3>AKTYWACJA ZESPOŁU</h3>
+
+        <div class="task-instruction">
+          <span class="instruction-number">1</span>
+          <p>Zbierzcie się wszyscy przy panu młodym.</p>
+        </div>
+        <div class="task-instruction">
+          <span class="instruction-number">2</span>
+          <p>Każdy agent kolejno podaje wyłącznie swój kryptonim.</p>
+        </div>
+        <div class="task-instruction">
+          <span class="instruction-number">3</span>
+          <p>Pan młody kończy odprawę słowami: <strong>„Zespół gotowy.”</strong></p>
+        </div>
+
+        <div class="mission-rule">
+          <span>WARUNEK ZALICZENIA</span>
+          <p>W odprawie muszą uczestniczyć wszystkie osoby. Nie ujawniajcie swoich specjalizacji ani treści profili.</p>
+        </div>
+      </article>
+
+      ${completed ? `
+        <div class="task-success">
+          <span class="success-mark">✓</span>
+          <div>
+            <small>POTWIERDZENIE SYSTEMOWE</small>
+            <strong>Zespół został aktywowany</strong>
+          </div>
+        </div>
+      ` : `
+        <div class="actions">
+          ${button("Zadanie wykonane", "complete-task")}
+        </div>
+      `}
+
+      <div class="actions">
+        ${button("Otwórz profil agenta", "identity", "secondary")}
+      </div>
+    </section>`;
+
+  bindActions({
+    "complete-task": () => {
+      state.firstTaskCompleted = true;
+      saveState();
+      vibrate([45, 25, 45, 25, 100]);
+      tone("reveal");
+      renderFirstTask(identity);
+    },
+    identity: () => renderIdentityReveal(identity)
   });
 }
 
@@ -529,7 +640,11 @@ function renderResume(identity) {
     </section>`;
 
   bindActions({
-    continue: () => state.briefingAccepted ? renderReady(identity) : renderBriefing(identity),
+    continue: () => {
+      if (state.firstTaskOpened || state.readyConfirmed) renderFirstTask(identity);
+      else if (state.briefingAccepted) renderReady(identity);
+      else renderBriefing(identity);
+    },
     identity: () => renderIdentityReveal(identity),
     reset: confirmReset
   });
@@ -566,6 +681,9 @@ function resetIdentity() {
     identityId: "",
     authenticatedAt: null,
     briefingAccepted: false,
+    readyConfirmed: false,
+    firstTaskOpened: false,
+    firstTaskCompleted: false,
     sound: true
   });
   soundIcon.textContent = "◖";
@@ -581,7 +699,7 @@ renderBoot();
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
     try {
-      const registration = await navigator.serviceWorker.register("./service-worker.js?v=023", {
+      const registration = await navigator.serviceWorker.register("./service-worker.js?v=031", {
         updateViaCache: "none"
       });
       await registration.update();

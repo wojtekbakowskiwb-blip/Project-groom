@@ -1,7 +1,7 @@
 {
   "name": "Project Groom — Gra terenowa",
   "short_name": "Project Groom",
-  "description": "Zabezpieczona aplikacja terenowa Project Groom.",
+  "description": "Project Groom — profile agentów, gotowość zespołu i pierwsze zadanie.",
   "start_url": "./?v=021",
   "scope": "./",
   "display": "standalone",
