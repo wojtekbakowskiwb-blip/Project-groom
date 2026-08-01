@@ -528,7 +528,12 @@ soundToggle.setAttribute("aria-pressed", String(state.sound));
 renderBoot();
 
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./service-worker.js").catch(() => {});
+  window.addEventListener("load", async () => {
+    try {
+      const registration = await navigator.serviceWorker.register("./service-worker.js?v=021", {
+        updateViaCache: "none"
+      });
+      await registration.update();
+    } catch (_) {}
   });
 }
