@@ -11,12 +11,30 @@ const IDENTITIES = Object.freeze({
     id: "groom",
     clearance: "OMEGA",
     codename: "PAN MŁODY",
-    title: "Obiekt operacji",
+    title: "Kamiś Kamiński // rocznik 1993",
     symbol: "G",
     accent: "gold",
     role: "Jesteś centralnym punktem operacji. Nie znasz pełnego planu, ale część decyzji może zostać podjęta wyłącznie przez Ciebie.",
     directive: "Słuchaj zespołu, lecz ostatnie słowo należy do Ciebie. M może zwracać się bezpośrednio do Ciebie.",
-    classified: "Twój kod nie bierze udziału w losowaniu. Organizator przekazuje go Tobie osobiście."
+    classified: "Twój kod nie bierze udziału w losowaniu. Organizator przekazuje go Tobie osobiście.",
+    dossier: {
+      fullName: "Kamiś Kamiński",
+      birthYear: "1993",
+      status: "OBIEKT OPERACJI ALPHA",
+      summary: "Łączy analityczny umysł, zamiłowanie do przygód i nieustanną potrzebę odkrywania, jak działają ludzie, historie i dobrze zaprojektowane zagadki.",
+      facts: [
+        ["LOT", "Świat lotnictwa, podróży i procedur, w którym precyzja ma znaczenie."],
+        ["NO TIME GAMES", "Zagadki, scenariusze i doświadczenia, które wymagają pomysłowości oraz dobrej pracy zespołowej."],
+        ["FILOZOFIA", "Skłonność do zadawania pytań, na które nie zawsze istnieje jedna wygodna odpowiedź."],
+        ["MAGGIE", "Narzeczona i najważniejsza osoba w aktach. Kryptonim operacyjny: FUTURE WIFE."],
+        ["GOLF", "Cierpliwość, precyzja i konsekwencja — najlepiej sprawdzane na polu."],
+        ["UNCHARTED / INDIANA JONES", "Przygoda, artefakty, ukryte przejścia i historie, które zaczynają się od niepozornej wskazówki."],
+        ["STUDIO GHIBLI", "Wyobraźnia, klimat i opowieści, w których szczegóły są równie ważne jak główna misja."],
+        ["KAWA VIDEOBEATS", "Firma produkcji muzycznej, szczególnie związana z piosenką „Kręci mi się” oraz teledyskiem dla Ryba Warszawski MC."],
+        ["FOO FIGHTERS", "Głośna energia, mocne riffy i ścieżka dźwiękowa do operacji wymagających tempa."]
+      ],
+      expansion: ["Historia operacyjna", "Osiągnięcia", "Zdjęcia z misji", "Odznaczenia", "Znani współpracownicy"]
+    }
   },
   "ATLAS-314": {
     id: "atlas",
@@ -356,6 +374,37 @@ function renderIdentityDecrypt(identity) {
   }, 1650);
 }
 
+
+function renderGroomDossier(identity) {
+  if (!identity.dossier) return "";
+  const dossier = identity.dossier;
+  const facts = dossier.facts.map(([label, description]) => `
+    <article class="profile-fact">
+      <span>${escapeHtml(label)}</span>
+      <p>${escapeHtml(description)}</p>
+    </article>`).join("");
+  const expansion = dossier.expansion.map(item => `<li>${escapeHtml(item)}</li>`).join("");
+
+  return `
+    <section class="groom-dossier" aria-label="Rozszerzone akta pana młodego">
+      <div class="dossier-topline">
+        <span>TAJNE // POZIOM OMEGA</span>
+        <strong>AKTA OSOBOWE</strong>
+      </div>
+      <div class="dossier-personal">
+        <div><span>IMIĘ I NAZWISKO</span><strong>${escapeHtml(dossier.fullName)}</strong></div>
+        <div><span>ROCZNIK</span><strong>${escapeHtml(dossier.birthYear)}</strong></div>
+        <div><span>STATUS</span><strong>${escapeHtml(dossier.status)}</strong></div>
+      </div>
+      <p class="dossier-summary">${escapeHtml(dossier.summary)}</p>
+      <div class="profile-facts">${facts}</div>
+      <div class="dossier-expansion">
+        <span class="block-label">AKTA W TRAKCIE UZUPEŁNIANIA</span>
+        <ul>${expansion}</ul>
+      </div>
+    </section>`;
+}
+
 function renderIdentityReveal(identity) {
   state.screen = "identity";
   saveState();
@@ -389,28 +438,9 @@ function renderIdentityReveal(identity) {
         <p>${identity.directive}</p>
       </div>
 
-      ${identity.id==="groom" ? `
-      <section class="mission-block">
-        <span class="block-label">AKTA PERSONALNE // MI6</span>
-        <p><strong>Kamiś Kamiński</strong><br>Rocznik: 1993</p>
-        <ul class="groom-profile">
-          <li>✈️ LOT – doskonale odnajduje się na lotniskach i w podróży.</li>
-          <li>🎲 No Time Games – twórca gier i zagadek.</li>
-          <li>📚 Filozofia – lubi zadawać trudne pytania.</li>
-          <li>❤️ Narzeczona: Maggie (kryptonim „Future Wife”).</li>
-          <li>⛳ Golf – cierpliwość i precyzja.</li>
-          <li>🧭 Indiana Jones & Uncharted – ulubiony klimat przygody.</li>
-          <li>🎥 Studio Ghibli – inspiracja wyobraźnią i historiami.</li>
-          <li>🎧 Videobeats – produkcja muzyczna.</li>
-          <li>☕ Dobra kawa jest paliwem każdej misji.</li>
-          <li>🎸 Foo Fighters – obowiązkowa ścieżka dźwiękowa.</li>
-        </ul>
-        <div class="placeholder-box">
-          <strong>AKTA W TRAKCIE UZUPEŁNIANIA</strong>
-          <p>• Historia operacyjna<br>• Osiągnięcia<br>• Zdjęcia z misji<br>• Odznaczenia<br>• Znani współpracownicy</p>
-        </div>
-      </section>` : ""}
       ${identity.classified ? `<div class="groom-note"><span>TYLKO DLA PANA MŁODEGO</span><p>${identity.classified}</p></div>` : ""}
+
+      ${renderGroomDossier(identity)}
 
       <div class="actions">
         ${button("Zapamiętałem tożsamość", "accept")}
@@ -551,7 +581,7 @@ renderBoot();
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
     try {
-      const registration = await navigator.serviceWorker.register("./service-worker.js?v=021", {
+      const registration = await navigator.serviceWorker.register("./service-worker.js?v=023", {
         updateViaCache: "none"
       });
       await registration.update();
