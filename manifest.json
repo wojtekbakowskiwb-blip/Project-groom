@@ -1,7 +1,7 @@
 {
   "name": "Project Groom — Gra terenowa",
   "short_name": "Project Groom",
-  "description": "Project Groom — indywidualna przepustka po rozwiązaniu szyfru Indiana Jones.",
+  "description": "Project Groom — szyfr Indiana Jones i zagadka prowadząca do pierwszej misji.",
   "start_url": "./?v=021",
   "scope": "./",
   "display": "standalone",

@@ -579,8 +579,7 @@ function renderFirstTask(identity, message = "") {
 
         <p class="mission-intro">
           Agent 001 pozostawił pięć śladów związanych z przygodami Indiany Jonesa.
-          Każdy agent musi samodzielnie ułożyć filmy chronologicznie, a następnie z każdego tytułu wybrać
-          <strong>pierwszą literę wyróżnionego słowa</strong>.
+          Odszyfruj ukryty kod. Kolejność ma znaczenie.
         </p>
 
         <div class="individual-rule">
@@ -588,22 +587,22 @@ function renderFirstTask(identity, message = "") {
           <p>Każdy uczestnik wpisuje kod na swoim telefonie. Przepustki nie można przekazać innemu agentowi.</p>
         </div>
 
-        <div class="film-sequence" aria-label="Filmy Indiana Jones w kolejności premier">
-          <div><span>1981</span><p><strong>Raiders</strong> of the Lost Ark</p></div>
-          <div><span>1984</span><p><strong>Temple</strong> of Doom</p></div>
-          <div><span>1989</span><p>The Last <strong>Crusade</strong></p></div>
-          <div><span>2008</span><p><strong>Kingdom</strong> of the Crystal Skull</p></div>
-          <div><span>2023</span><p><strong>Dial</strong> of Destiny</p></div>
+        <div class="film-sequence shuffled" aria-label="Filmy Indiana Jones">
+          <div><p><strong>Kingdom</strong> of the Crystal Skull</p></div>
+          <div><p>The Last <strong>Crusade</strong></p></div>
+          <div><p><strong>Raiders</strong> of the Lost Ark</p></div>
+          <div><p><strong>Dial</strong> of Destiny</p></div>
+          <div><p><strong>Temple</strong> of Doom</p></div>
         </div>
 
         ${completed ? `
           <div class="decoded-location">
             <div class="decoded-stamp">PRZEPUSTKA AKTYWNA</div>
             <p class="block-label">INDYWIDUALNA PRZEPUSTKA</p>
-            <h3>UDAJ SIĘ DO M</h3>
-            <p>Pokaż organizatorowi tę przepustkę i podaj hasło:</p>
-            <div class="final-password">RTCKD</div>
-            <p class="location-note">Po otrzymaniu przepustek przez wszystkich agentów M rozpocznie pierwszą misję.</p>
+            <h3>NEXT MISSION</h3>
+            <p class="riddle-location">NEXT MISSION IS WHERE <strong>LOVE MEANS NOTHING.</strong></p>
+            <div class="final-password">RTCKD</div><p class="location-clue">Odszyfruj miejsce i udaj się tam z całą drużyną.</p>
+            <p class="location-note">Nie mów odpowiedzi głośno, dopóki wszyscy nie uzyskają dostępu.</p>
           </div>
         ` : `
           <form class="cipher-form" id="firstTaskForm" autocomplete="off">
@@ -629,7 +628,7 @@ function renderFirstTask(identity, message = "") {
           ${showHint ? `
             <div class="mission-hint">
               <span>PODPOWIEDŹ OD M</span>
-              <p>Nie używaj pierwszych liter całych tytułów. Liczą się wyłącznie wyróżnione słowa — dokładnie w kolejności lat.</p>
+              <p>Zwróć uwagę na wyróżnione słowa. Filmy nie są ułożone we właściwej kolejności.</p>
             </div>
           ` : ""}
         `}
@@ -770,7 +769,7 @@ renderBoot();
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
     try {
-      const registration = await navigator.serviceWorker.register("./service-worker.js?v=033", {
+      const registration = await navigator.serviceWorker.register("./service-worker.js?v=034", {
         updateViaCache: "none"
       });
       await registration.update();

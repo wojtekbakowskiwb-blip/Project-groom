@@ -723,3 +723,37 @@ h2 { font-size: clamp(31px, 8vw, 55px); letter-spacing: -.027em; }
   color: rgba(112,215,161,.18);
   transform: rotate(-90deg);
 }
+
+
+/* ===== v0.3.4 — UKRYTY SZYFR I ZAGADKA LOKALIZACJI ===== */
+
+.film-sequence.shuffled > div {
+  grid-template-columns: 1fr;
+  min-height: 50px;
+}
+
+.film-sequence.shuffled p {
+  text-align: left;
+}
+
+.riddle-location {
+  margin: 14px 0 8px !important;
+  padding: 15px 12px;
+  border: 1px solid rgba(210,176,111,.24);
+  background: rgba(210,176,111,.045);
+  font-family: var(--mono);
+  font-size: 13px !important;
+  line-height: 1.6 !important;
+  letter-spacing: .06em;
+  color: #e8dfcb !important;
+}
+
+.riddle-location strong {
+  color: #e7c983;
+}
+
+.location-clue {
+  margin-top: 10px !important;
+  font-size: 12px !important;
+  color: var(--muted) !important;
+}
