@@ -579,9 +579,14 @@ function renderFirstTask(identity, message = "") {
 
         <p class="mission-intro">
           Agent 001 pozostawił pięć śladów związanych z przygodami Indiany Jonesa.
-          Ułóż filmy chronologicznie, a następnie z każdego tytułu wybierz
+          Każdy agent musi samodzielnie ułożyć filmy chronologicznie, a następnie z każdego tytułu wybrać
           <strong>pierwszą literę wyróżnionego słowa</strong>.
         </p>
+
+        <div class="individual-rule">
+          <span>ZASADA DOSTĘPU</span>
+          <p>Każdy uczestnik wpisuje kod na swoim telefonie. Przepustki nie można przekazać innemu agentowi.</p>
+        </div>
 
         <div class="film-sequence" aria-label="Filmy Indiana Jones w kolejności premier">
           <div><span>1981</span><p><strong>Raiders</strong> of the Lost Ark</p></div>
@@ -593,16 +598,16 @@ function renderFirstTask(identity, message = "") {
 
         ${completed ? `
           <div class="decoded-location">
-            <div class="decoded-stamp">DOSTĘP PRZYZNANY</div>
-            <p class="block-label">ODSZYFROWANA LOKALIZACJA</p>
-            <h3>PIERWSZA MISJA CZEKA U M</h3>
-            <p>Podejdźcie całą grupą do organizatora i podajcie hasło:</p>
+            <div class="decoded-stamp">PRZEPUSTKA AKTYWNA</div>
+            <p class="block-label">INDYWIDUALNA PRZEPUSTKA</p>
+            <h3>UDAJ SIĘ DO M</h3>
+            <p>Pokaż organizatorowi tę przepustkę i podaj hasło:</p>
             <div class="final-password">RTCKD</div>
-            <p class="location-note">M przekaże Wam pierwszy fizyczny pakiet misji.</p>
+            <p class="location-note">Po otrzymaniu przepustek przez wszystkich agentów M rozpocznie pierwszą misję.</p>
           </div>
         ` : `
           <form class="cipher-form" id="firstTaskForm" autocomplete="off">
-            <label for="firstTaskCode">WPROWADŹ PIĘCIOLITEROWY KOD</label>
+            <label for="firstTaskCode">WPROWADŹ SWÓJ PIĘCIOLITEROWY KOD</label>
             <input
               id="firstTaskCode"
               name="firstTaskCode"
@@ -635,7 +640,7 @@ function renderFirstTask(identity, message = "") {
           <span class="success-mark">✓</span>
           <div>
             <small>POTWIERDZENIE SYSTEMOWE</small>
-            <strong>Odnaleziono drogę do pierwszej misji</strong>
+            <strong>Indywidualna przepustka została aktywowana</strong>
           </div>
         </div>
       ` : ""}
@@ -765,7 +770,7 @@ renderBoot();
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
     try {
-      const registration = await navigator.serviceWorker.register("./service-worker.js?v=032", {
+      const registration = await navigator.serviceWorker.register("./service-worker.js?v=033", {
         updateViaCache: "none"
       });
       await registration.update();

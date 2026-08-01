@@ -682,3 +682,44 @@ h2 { font-size: clamp(31px, 8vw, 55px); letter-spacing: -.027em; }
     letter-spacing: .34em;
   }
 }
+
+
+/* ===== v0.3.3 — INDYWIDUALNA PRZEPUSTKA ===== */
+
+.individual-rule {
+  margin: 16px 0 18px;
+  padding: 14px;
+  border: 1px solid rgba(210,176,111,.18);
+  background: rgba(210,176,111,.045);
+}
+
+.individual-rule span {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .12em;
+  color: #d9be82;
+}
+
+.individual-rule p {
+  margin: 7px 0 0;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.decoded-location {
+  position: relative;
+  overflow: hidden;
+}
+
+.decoded-location::after {
+  content: "AUTHORIZED";
+  position: absolute;
+  right: -24px;
+  bottom: 10px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .18em;
+  color: rgba(112,215,161,.18);
+  transform: rotate(-90deg);
+}
