@@ -213,3 +213,5 @@ h2 { font-size: clamp(31px, 8vw, 55px); letter-spacing: -.027em; }
 @media (prefers-reduced-motion:reduce) {
   *,*::before,*::after { animation-duration:.01ms!important; animation-iteration-count:1!important; scroll-behavior:auto!important; }
 }
+
+.groom-profile{padding-left:18px;line-height:1.7}.placeholder-box{margin-top:16px;padding:14px;border:1px dashed #8b6b2b;border-radius:12px;background:rgba(255,215,0,.06)}

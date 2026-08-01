@@ -389,6 +389,27 @@ function renderIdentityReveal(identity) {
         <p>${identity.directive}</p>
       </div>
 
+      ${identity.id==="groom" ? `
+      <section class="mission-block">
+        <span class="block-label">AKTA PERSONALNE // MI6</span>
+        <p><strong>Kamiś Kamiński</strong><br>Rocznik: 1993</p>
+        <ul class="groom-profile">
+          <li>✈️ LOT – doskonale odnajduje się na lotniskach i w podróży.</li>
+          <li>🎲 No Time Games – twórca gier i zagadek.</li>
+          <li>📚 Filozofia – lubi zadawać trudne pytania.</li>
+          <li>❤️ Narzeczona: Maggie (kryptonim „Future Wife”).</li>
+          <li>⛳ Golf – cierpliwość i precyzja.</li>
+          <li>🧭 Indiana Jones & Uncharted – ulubiony klimat przygody.</li>
+          <li>🎥 Studio Ghibli – inspiracja wyobraźnią i historiami.</li>
+          <li>🎧 Videobeats – produkcja muzyczna.</li>
+          <li>☕ Dobra kawa jest paliwem każdej misji.</li>
+          <li>🎸 Foo Fighters – obowiązkowa ścieżka dźwiękowa.</li>
+        </ul>
+        <div class="placeholder-box">
+          <strong>AKTA W TRAKCIE UZUPEŁNIANIA</strong>
+          <p>• Historia operacyjna<br>• Osiągnięcia<br>• Zdjęcia z misji<br>• Odznaczenia<br>• Znani współpracownicy</p>
+        </div>
+      </section>` : ""}
       ${identity.classified ? `<div class="groom-note"><span>TYLKO DLA PANA MŁODEGO</span><p>${identity.classified}</p></div>` : ""}
 
       <div class="actions">
