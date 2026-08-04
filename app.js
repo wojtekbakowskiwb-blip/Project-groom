@@ -135,6 +135,7 @@ const state = {
   authenticatedAt: null,
   briefingAccepted: false,
   readyConfirmed: false,
+  operationIntroAccepted: false,
   firstTaskOpened: false,
   firstTaskCompleted: false,
   firstTaskAttempts: 0,
@@ -342,6 +343,7 @@ function renderAccess(errorMessage = "") {
     state.authenticatedAt = new Date().toISOString();
     state.briefingAccepted = false;
     state.readyConfirmed = false;
+    state.operationIntroAccepted = false;
     state.firstTaskOpened = false;
     state.firstTaskCompleted = false;
     state.firstTaskAttempts = 0;
@@ -529,14 +531,101 @@ function renderReady(identity) {
   bindActions({
     "confirm-ready": () => {
       state.readyConfirmed = true;
-      state.firstTaskOpened = true;
+      state.operationIntroAccepted = false;
+      state.firstTaskOpened = false;
       saveState();
       vibrate([35, 30, 80]);
       tone("confirm");
-      renderFirstTask(identity);
+      renderOperationIntro(identity);
     },
     identity: () => renderIdentityReveal(identity),
     reset: confirmReset
+  });
+}
+
+
+function renderOperationIntro(identity) {
+  state.screen = "operation-intro";
+  state.readyConfirmed = true;
+  state.firstTaskOpened = false;
+  saveState();
+  setStatus("TRANSMISJA M");
+
+  screen.innerHTML = `
+    <section class="card operation-intro-card fade-in accent-border-${identity.accent}">
+      <div class="transmission-head">
+        <div class="transmission-signal" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <div>
+          <p class="kicker">Kanał priorytetowy / M</p>
+          <h2>Operacja<br>Project Groom</h2>
+        </div>
+      </div>
+
+      <div class="m-transmission">
+        <p><strong>Witaj, Agencie ${identity.codename}.</strong></p>
+
+        <p>
+          To nie jest zwykły wieczór kawalerski.
+          To ostatnia operacja Agenta <strong>GROOM 007</strong>
+          przed rozpoczęciem nowego rozdziału jego życia.
+        </p>
+
+        <p>
+          Przed nami walka o losy jednego z największych agentów w historii.
+          Musimy odzyskać utracone dane, wiedzę i kody, zanim GROOM 007
+          bezpowrotnie straci kontakt z rzeczywistością.
+        </p>
+
+        <p>
+          Przed Wami misje ukryte w różnych częściach tego świata.
+          Każda z nich odsłoni fragment większej układanki i wskaże dalszy kierunek.
+        </p>
+
+        <p>
+          Będziecie wiedzieli, dokąd zmierzacie.
+          Nie poznacie jednak prawdziwego celu, dopóki wszystkie elementy
+          nie znajdą się na swoim miejscu.
+        </p>
+      </div>
+
+      <div class="mission-protocol">
+        <div>
+          <span>01</span>
+          <p>Pozyskujcie dane, kody i informacje.</p>
+        </div>
+        <div>
+          <span>02</span>
+          <p>Nie pomijajcie żadnej wskazówki.</p>
+        </div>
+        <div>
+          <span>03</span>
+          <p>Misja po misji. Cel pozostaje tajny.</p>
+        </div>
+      </div>
+
+      <div class="classified-note">
+        <span>KLASYFIKACJA: OMEGA</span>
+        <p>Nie wszystkie informacje będą zrozumiałe od razu. Zachowajcie je do finału operacji.</p>
+      </div>
+
+      <div class="actions">
+        ${button("Rozpocznij operację", "begin-operation")}
+        ${button("Otwórz profil agenta", "identity", "secondary")}
+      </div>
+    </section>`;
+
+  bindActions({
+    "begin-operation": () => {
+      state.operationIntroAccepted = true;
+      state.firstTaskOpened = true;
+      saveState();
+      vibrate([35, 25, 75]);
+      tone("reveal");
+      renderFirstTask(identity);
+    },
+    identity: () => renderIdentityReveal(identity)
   });
 }
 
@@ -710,7 +799,8 @@ function renderResume(identity) {
 
   bindActions({
     continue: () => {
-      if (state.firstTaskOpened || state.readyConfirmed) renderFirstTask(identity);
+      if (state.firstTaskOpened || state.operationIntroAccepted) renderFirstTask(identity);
+      else if (state.readyConfirmed) renderOperationIntro(identity);
       else if (state.briefingAccepted) renderReady(identity);
       else renderBriefing(identity);
     },
@@ -736,8 +826,10 @@ function confirmReset() {
     confirm: resetIdentity,
     cancel: () => {
       const identity = currentIdentity();
-      if (identity) renderReady(identity);
-      else renderAccess();
+      if (!identity) renderAccess();
+      else if (state.firstTaskOpened || state.operationIntroAccepted) renderFirstTask(identity);
+      else if (state.readyConfirmed) renderOperationIntro(identity);
+      else renderReady(identity);
     }
   });
 }
@@ -751,6 +843,7 @@ function resetIdentity() {
     authenticatedAt: null,
     briefingAccepted: false,
     readyConfirmed: false,
+    operationIntroAccepted: false,
     firstTaskOpened: false,
     firstTaskCompleted: false,
     firstTaskAttempts: 0,
@@ -769,7 +862,7 @@ renderBoot();
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
     try {
-      const registration = await navigator.serviceWorker.register("./service-worker.js?v=034", {
+      const registration = await navigator.serviceWorker.register("./service-worker.js?v=040", {
         updateViaCache: "none"
       });
       await registration.update();
