@@ -14,3 +14,9 @@
 - Wynik 0100–0149 odblokowuje trudniejszą podpowiedź.
 - Wynik 0150 lub wyższy odblokowuje łatwiejszą podpowiedź.
 - Dodano zapis wyniku i postępu na urządzeniu.
+
+## v0.4.2
+- Usunięto rozwiązanie „ALT + ANKA”.
+- Wynik 0150+ pokazuje dokładną łatwiejszą zagadkę wskazaną przez autora.
+- Wynik 0100–0149 pokazuje trudniejszą, bardziej zaszyfrowaną wersję.
+- Zaktualizowano cache aplikacji.

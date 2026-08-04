@@ -1,7 +1,7 @@
 {
   "name": "Project Groom — Gra terenowa",
   "short_name": "Project Groom",
-  "description": "Project Groom — pierwsza misja na korcie i test wytrzymałości zespołu.",
+  "description": "Project Groom — misja na korcie z poprawionymi poziomami podpowiedzi.",
   "start_url": "./?v=021",
   "scope": "./",
   "display": "standalone",

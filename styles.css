@@ -1029,10 +1029,3 @@ h2 { font-size: clamp(31px, 8vw, 55px); letter-spacing: -.027em; }
   color: var(--text);
 }
 
-.next-location-riddle .easy-riddle {
-  font-family: var(--mono);
-  font-size: 25px !important;
-  letter-spacing: .13em;
-  text-align: center;
-  color: #ead39d !important;
-}
