@@ -896,3 +896,143 @@ h2 { font-size: clamp(31px, 8vw, 55px); letter-spacing: -.027em; }
   line-height: 1.55;
   color: var(--muted);
 }
+
+
+/* ===== v0.4.1 — MISJA NA KORCIE ===== */
+
+.pushup-objective {
+  margin-top: 18px;
+  padding: 17px 15px;
+  border: 1px solid rgba(210,176,111,.22);
+  background: rgba(210,176,111,.045);
+}
+
+.pushup-objective > span,
+.pushup-form label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .12em;
+  color: #d9be82;
+}
+
+.pushup-objective h3 {
+  margin: 9px 0 10px;
+  font-size: clamp(22px, 7vw, 32px);
+  line-height: 1.05;
+}
+
+.pushup-objective p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.pushup-form {
+  display: grid;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.pushup-form input {
+  width: 100%;
+  height: 68px;
+  padding: 0 16px;
+  border: 1px solid rgba(210,176,111,.32);
+  border-radius: 0;
+  outline: none;
+  background: rgba(0,0,0,.28);
+  font-family: var(--mono);
+  font-size: 29px;
+  font-weight: 750;
+  letter-spacing: .28em;
+  text-align: center;
+  color: #ead39d;
+}
+
+.pushup-form input:focus {
+  border-color: rgba(234,211,157,.7);
+  box-shadow: 0 0 0 3px rgba(210,176,111,.07);
+}
+
+.threshold-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+  margin-top: 14px;
+}
+
+.threshold-info > div {
+  display: grid;
+  gap: 5px;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,.075);
+  background: rgba(255,255,255,.022);
+}
+
+.threshold-info span {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: .11em;
+  color: var(--muted);
+}
+
+.threshold-info strong {
+  font-family: var(--mono);
+  font-size: 18px;
+  color: var(--text);
+}
+
+.result-access {
+  display: grid;
+  gap: 7px;
+  margin: 18px 0;
+  padding: 16px;
+  border: 1px solid rgba(91,199,139,.28);
+  background: rgba(91,199,139,.06);
+  text-align: center;
+}
+
+.result-access.omega {
+  border-color: rgba(210,176,111,.38);
+  background: rgba(210,176,111,.075);
+}
+
+.result-access span {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .14em;
+  color: #70d7a1;
+}
+
+.result-access.omega span {
+  color: #e2c785;
+}
+
+.result-access strong {
+  font-family: var(--mono);
+  font-size: 24px;
+  letter-spacing: .08em;
+}
+
+.next-location-riddle {
+  margin: 17px 0;
+  padding: 17px 15px;
+  border-left: 2px solid rgba(210,176,111,.68);
+  background: rgba(210,176,111,.05);
+}
+
+.next-location-riddle > p:not(.block-label) {
+  margin: 8px 0 0;
+  font-size: 14px;
+  line-height: 1.68;
+  color: var(--text);
+}
+
+.next-location-riddle .easy-riddle {
+  font-family: var(--mono);
+  font-size: 25px !important;
+  letter-spacing: .13em;
+  text-align: center;
+  color: #ead39d !important;
+}

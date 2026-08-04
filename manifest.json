@@ -1,7 +1,7 @@
 {
   "name": "Project Groom — Gra terenowa",
   "short_name": "Project Groom",
-  "description": "Project Groom — profile agentów, odprawa M i pierwsza zagadka operacyjna.",
+  "description": "Project Groom — pierwsza misja na korcie i test wytrzymałości zespołu.",
   "start_url": "./?v=021",
   "scope": "./",
   "display": "standalone",

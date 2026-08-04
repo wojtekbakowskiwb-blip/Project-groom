@@ -139,6 +139,9 @@ const state = {
   firstTaskOpened: false,
   firstTaskCompleted: false,
   firstTaskAttempts: 0,
+  courtReached: false,
+  pushupResult: null,
+  pushupPassed: false,
   sound: true
 };
 
@@ -347,6 +350,9 @@ function renderAccess(errorMessage = "") {
     state.firstTaskOpened = false;
     state.firstTaskCompleted = false;
     state.firstTaskAttempts = 0;
+    state.courtReached = false;
+    state.pushupResult = null;
+    state.pushupPassed = false;
     saveState();
     vibrate([40, 25, 90]);
     tone("confirm");
@@ -690,8 +696,8 @@ function renderFirstTask(identity, message = "") {
             <p class="block-label">INDYWIDUALNA PRZEPUSTKA</p>
             <h3>NEXT MISSION</h3>
             <p class="riddle-location">NEXT MISSION IS WHERE <strong>LOVE MEANS NOTHING.</strong></p>
-            <div class="final-password">RTCKD</div><p class="location-clue">Odszyfruj miejsce i udaj się tam z całą drużyną.</p>
-            <p class="location-note">Nie mów odpowiedzi głośno, dopóki wszyscy nie uzyskają dostępu.</p>
+            <p class="location-clue">Odszyfruj miejsce i udaj się tam z całą drużyną.</p>
+            <p class="location-note">Gdy znajdziesz się w obrębie kolejnej misji, potwierdź gotowość.</p>
           </div>
         ` : `
           <form class="cipher-form" id="firstTaskForm" autocomplete="off">
@@ -734,6 +740,7 @@ function renderFirstTask(identity, message = "") {
       ` : ""}
 
       <div class="actions">
+        ${completed ? button("Jesteśmy na miejscu", "court-ready") : ""}
         ${button("Otwórz profil agenta", "identity", "secondary")}
       </div>
     </section>`;
@@ -765,13 +772,154 @@ function renderFirstTask(identity, message = "") {
       state.firstTaskAttempts = (state.firstTaskAttempts || 0) + 1;
       saveState();
       vibrate([70, 45, 70]);
-      tone("error");
+      tone("alert");
       renderFirstTask(
         identity,
         answer.length < 5
           ? "Kod musi zawierać dokładnie pięć liter."
           : "Kod odrzucony. Sprawdź kolejność filmów i spróbuj ponownie."
       );
+    });
+
+    setTimeout(() => input.focus(), 120);
+  }
+
+  bindActions({
+    "court-ready": () => {
+      state.courtReached = true;
+      saveState();
+      vibrate([35, 25, 80]);
+      tone("confirm");
+      renderPushupMission(identity);
+    },
+    identity: () => renderIdentityReveal(identity)
+  });
+}
+
+function renderPushupMission(identity, message = "") {
+  state.screen = "pushup-mission";
+  state.courtReached = true;
+  saveState();
+
+  const passed = state.pushupPassed;
+  const result = Number(state.pushupResult || 0);
+  const easyHint = passed && result >= 150;
+
+  setStatus(passed ? "MISJA 01 WYKONANA" : "MISJA 01 / KORT");
+
+  screen.innerHTML = `
+    <section class="card pushup-card fade-in accent-border-${identity.accent}">
+      <div class="task-header">
+        <div>
+          <p class="kicker">Misja 01 / Kort</p>
+          <h2>Test wytrzymałości</h2>
+        </div>
+        <div class="task-number">01</div>
+      </div>
+
+      <article class="group-mission ${passed ? "is-complete" : ""}">
+        <div class="mission-classification">
+          <span>ZADANIE ZESPOŁOWE</span>
+          <strong>${passed ? "ZALICZONE" : "AKTYWNE"}</strong>
+        </div>
+
+        <p class="mission-intro">
+          Sam intelekt nie wystarczy. Agenci muszą udowodnić,
+          że potrafią działać jako zespół.
+        </p>
+
+        <div class="pushup-objective">
+          <span>CEL OPERACYJNY</span>
+          <h3>WYKONAJCIE WSPÓLNIE JAK NAJWIĘCEJ POMPEK</h3>
+          <p>Każdy agent może wykonać dowolną liczbę. Liczy się łączna suma całej drużyny.</p>
+        </div>
+
+        ${passed ? `
+          <div class="result-access ${easyHint ? "omega" : "standard"}">
+            <span>${easyHint ? "OMEGA ACCESS" : "STANDARD ACCESS"}</span>
+            <strong>${String(result).padStart(4, "0")} POMPEK</strong>
+          </div>
+
+          <div class="next-location-riddle">
+            <p class="block-label">${easyHint ? "ROZSZERZONA PODPOWIEDŹ" : "PODPOWIEDŹ"}</p>
+            ${easyHint ? `
+              <p class="easy-riddle">ALT + ANKA</p>
+            ` : `
+              <p>Kolejna misja jak Puerto Rico. Aby się zresetować potrzebujesz kontrolę, [...] i usunięcie. Aby poznać docelowe miejsce, przyda się również, WAG naszego snajpera.</p>
+            `}
+          </div>
+
+          <div class="task-success">
+            <span class="success-mark">✓</span>
+            <div>
+              <small>MISJA 01</small>
+              <strong>Wskazówka do kolejnej lokalizacji została odblokowana</strong>
+            </div>
+          </div>
+        ` : `
+          <form class="pushup-form" id="pushupForm" autocomplete="off">
+            <label for="pushupCount">ŁĄCZNA LICZBA POMPEK</label>
+            <input
+              id="pushupCount"
+              name="pushupCount"
+              type="number"
+              min="0"
+              max="9999"
+              inputmode="numeric"
+              placeholder="0100"
+              aria-describedby="pushupFeedback"
+            >
+            <button class="primary-button" type="submit">Zatwierdź wynik</button>
+          </form>
+
+          <div id="pushupFeedback" class="cipher-feedback ${message ? "is-visible" : ""}">
+            ${message}
+          </div>
+
+          <div class="threshold-info">
+            <div><span>MINIMUM</span><strong>0100</strong></div>
+            <div><span>OMEGA</span><strong>0150+</strong></div>
+          </div>
+        `}
+      </article>
+
+      <div class="actions">
+        ${button("Otwórz profil agenta", "identity", "secondary")}
+      </div>
+    </section>`;
+
+  if (!passed) {
+    const form = document.getElementById("pushupForm");
+    const input = document.getElementById("pushupCount");
+
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+      const value = Number.parseInt(input.value, 10);
+
+      if (!Number.isFinite(value) || value < 0) {
+        renderPushupMission(identity, "Wprowadź prawidłową łączną liczbę pompek.");
+        return;
+      }
+
+      state.pushupResult = value;
+
+      if (value < 100) {
+        state.pushupPassed = false;
+        saveState();
+        vibrate([70, 45, 70]);
+        tone("alert");
+        renderPushupMission(
+          identity,
+          `Wynik ${String(value).padStart(4, "0")} nie osiąga minimalnego progu operacyjnego 0100.`
+        );
+        return;
+      }
+
+      state.pushupPassed = true;
+      saveState();
+      vibrate([45, 25, 45, 25, 110]);
+      tone("reveal");
+      renderPushupMission(identity);
     });
 
     setTimeout(() => input.focus(), 120);
@@ -799,7 +947,9 @@ function renderResume(identity) {
 
   bindActions({
     continue: () => {
-      if (state.firstTaskOpened || state.operationIntroAccepted) renderFirstTask(identity);
+      if (state.courtReached) renderPushupMission(identity);
+      else if (state.courtReached) renderPushupMission(identity);
+      else if (state.firstTaskOpened || state.operationIntroAccepted) renderFirstTask(identity);
       else if (state.readyConfirmed) renderOperationIntro(identity);
       else if (state.briefingAccepted) renderReady(identity);
       else renderBriefing(identity);
@@ -847,6 +997,9 @@ function resetIdentity() {
     firstTaskOpened: false,
     firstTaskCompleted: false,
     firstTaskAttempts: 0,
+    courtReached: false,
+    pushupResult: null,
+    pushupPassed: false,
     sound: true
   });
   soundIcon.textContent = "◖";
@@ -862,7 +1015,7 @@ renderBoot();
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
     try {
-      const registration = await navigator.serviceWorker.register("./service-worker.js?v=040", {
+      const registration = await navigator.serviceWorker.register("./service-worker.js?v=041", {
         updateViaCache: "none"
       });
       await registration.update();
