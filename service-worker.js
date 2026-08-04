@@ -1,9 +1,9 @@
-const CACHE = "project-groom-v041";
+const CACHE = "project-groom-v042";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=041",
-  "./app.js?v=041",
+  "./styles.css?v=042",
+  "./app.js?v=042",
   "./manifest.json?v=023",
   "./icons/icon-192.png",
   "./icons/icon-512.png"

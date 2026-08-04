@@ -843,9 +843,22 @@ function renderPushupMission(identity, message = "") {
           <div class="next-location-riddle">
             <p class="block-label">${easyHint ? "ROZSZERZONA PODPOWIEDŹ" : "PODPOWIEDŹ"}</p>
             ${easyHint ? `
-              <p class="easy-riddle">ALT + ANKA</p>
+              <p>
+                Kolejna misja.
+                <br><br>
+                Jak w Puerto Rico...
+                <br><br>
+                Aby się zresetować potrzebujesz Control, [...] i Delete.
+                <br><br>
+                Aby poznać docelowe miejsce, przyda się również WAG naszego snajpera.
+              </p>
             ` : `
-              <p>Kolejna misja jak Puerto Rico. Aby się zresetować potrzebujesz kontrolę, [...] i usunięcie. Aby poznać docelowe miejsce, przyda się również, WAG naszego snajpera.</p>
+              <p>
+                Kolejny cel ukryto w dwóch niezależnych tropach.
+                Pierwszy jest brakującym elementem sekwencji, która przywraca kontrolę nad systemem.
+                Drugi pozostawił snajper w zaszyfrowanej informacji o swoim WAG.
+                Połącz oba tropy.
+              </p>
             `}
           </div>
 
@@ -1015,7 +1028,7 @@ renderBoot();
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
     try {
-      const registration = await navigator.serviceWorker.register("./service-worker.js?v=041", {
+      const registration = await navigator.serviceWorker.register("./service-worker.js?v=042", {
         updateViaCache: "none"
       });
       await registration.update();
