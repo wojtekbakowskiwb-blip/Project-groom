@@ -9,15 +9,15 @@
   <meta name="apple-mobile-web-app-title" content="Project Groom" />
   <meta name="description" content="Project Groom — zabezpieczona aplikacja terenowa." />
   <title>Project Groom</title>
-  <link rel="manifest" href="manifest.json?v=100" />
+  <link rel="manifest" href="manifest.json?v=023" />
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
-  <link rel="stylesheet" href="styles.css?v=100" />
+  <link rel="stylesheet" href="styles.css?v=047" />
 </head>
 <body>
-  <div id="globalGameMenu" class="global-game-menu">
+  <div id="globalGameMenu" class="global-game-menu" hidden>
     <button type="button" data-global-action="map" aria-label="Otwórz mapę">MAPA</button>
-    <button type="button" data-global-action="change-player" hidden aria-label="Zmień gracza">ZMIEŃ GRACZA</button>
-    <button type="button" data-global-action="exit-game" hidden aria-label="Wyjdź z gry">WYJDŹ</button>
+    <button type="button" data-global-action="change-player" aria-label="Zmień gracza">ZMIEŃ GRACZA</button>
+    <button type="button" data-global-action="exit-game" aria-label="Wyjdź z gry">WYJDŹ</button>
   </div>
 
   <div id="app" class="app-shell">
@@ -47,6 +47,30 @@
   </div>
 
   <noscript>Ta aplikacja wymaga włączonego JavaScriptu.</noscript>
-  <script src="project-groom-final.js?v=100"></script>
+  
+  <script>
+    (function () {
+      try {
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker.getRegistrations().then(function (registrations) {
+            return Promise.all(registrations.map(function (registration) {
+              return registration.unregister();
+            }));
+          });
+        }
+
+        if ("caches" in window) {
+          caches.keys().then(function (keys) {
+            return Promise.all(keys.map(function (key) {
+              return caches.delete(key);
+            }));
+          });
+        }
+      } catch (error) {
+        console.warn("Cache recovery:", error);
+      }
+    }());
+  </script>
+  <script src="game-v047.js?v=047"></script>
 </body>
 </html>
