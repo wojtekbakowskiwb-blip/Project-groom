@@ -27,3 +27,10 @@
 - Po zadaniu z pompkami każdy wpisuje ALTANKA.
 - Poprawiono treść łatwiejszej zagadki zgodnie z wytycznymi autora.
 - Dodano zapis potwierdzenia obu lokalizacji.
+
+## v0.4.4
+- Dodano rolę Agenta Szyfratora.
+- Dodano system punktów za podpowiedzi.
+- Dodano zadanie w altance z rankingiem 10 zdjęć.
+- Dodano 4 poziomy wskazówek zależne od wyniku.
+- Dodano obowiązkowe wpisanie BRAMA.

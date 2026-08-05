@@ -1067,3 +1067,67 @@ h2 { font-size: clamp(31px, 8vw, 55px); letter-spacing: -.027em; }
   border-color: rgba(234,211,157,.7);
   box-shadow: 0 0 0 3px rgba(210,176,111,.07);
 }
+
+
+/* ===== v0.4.4 — SZYFRATOR I MISJA W ALTANCE ===== */
+.cipher-briefing, .cipher-agent-card, .cipher-score-banner {
+  margin-top: 16px;
+  padding: 15px;
+  border: 1px solid rgba(210,176,111,.22);
+  background: rgba(210,176,111,.05);
+}
+.cipher-briefing p, .cipher-agent-card p {
+  margin: 7px 0 0;
+  font-size: 12px;
+  line-height: 1.58;
+  color: var(--muted);
+}
+.cipher-agent-card h3 { margin: 6px 0 9px; }
+.cipher-score-line, .cipher-score-banner { display: grid; gap: 5px; }
+.cipher-score-line { margin-top: 13px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,.08); }
+.cipher-score-line span, .cipher-score-banner span, .cipher-score-banner small {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .1em;
+  color: var(--muted);
+}
+.cipher-score-line strong, .cipher-score-banner strong {
+  font-family: var(--mono);
+  font-size: 22px;
+  color: #e7cb89;
+}
+.cipher-hint-button { width: 100%; margin-top: 12px; }
+.altanka-rules { display: grid; gap: 9px; margin: 17px 0; }
+.altanka-rules > div {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  align-items: start;
+  gap: 11px;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,.075);
+  background: rgba(255,255,255,.022);
+}
+.altanka-rules span { font-family: var(--mono); font-size: 10px; color: #d8bd7d; }
+.altanka-rules p { margin: 0; font-size: 12px; line-height: 1.5; color: var(--text); }
+.match-form { display: grid; gap: 10px; margin-top: 20px; }
+.match-form label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .12em;
+  color: #d9be82;
+}
+.match-form input {
+  width: 100%;
+  height: 68px;
+  padding: 0 16px;
+  border: 1px solid rgba(210,176,111,.32);
+  border-radius: 0;
+  outline: none;
+  background: rgba(0,0,0,.28);
+  font-family: var(--mono);
+  font-size: 29px;
+  font-weight: 750;
+  text-align: center;
+  color: #ead39d;
+}
+.preserve-lines { white-space: pre-line; }

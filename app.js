@@ -49,11 +49,11 @@ const IDENTITIES = Object.freeze({
   "CIPHER-82": {
     id: "cipher",
     clearance: "ALFA",
-    codename: "CIPHER",
+    codename: "SZYFRATOR",
     title: "Kryptolog",
     symbol: "C",
     accent: "blue",
-    role: "Rozpoznajesz szyfry, schematy, ciągi znaków i informacje ukryte w pozornie zwyczajnych komunikatach.",
+    role: "Szyfrator",
     directive: "Nie ignoruj liter, cyfr ani kolejności elementów. To, co wygląda na błąd, może być kluczem."
   },
   "ECHO-441": {
@@ -144,6 +144,10 @@ const state = {
   pushupResult: null,
   pushupPassed: false,
   altankaConfirmed: false,
+  cipherHintsUsed: 0,
+  altankaMatchCount: null,
+  altankaMissionCompleted: false,
+  bramaConfirmed: false,
   sound: true
 };
 
@@ -152,6 +156,18 @@ const screen = el("screen");
 const statusText = el("statusText");
 const soundToggle = el("soundToggle");
 const soundIcon = el("soundIcon");
+
+function isCipherAgent(identity) {
+  return Boolean(identity && (
+    identity.codename === "SZYFRATOR" ||
+    identity.title === "Agent Szyfrator" ||
+    identity.role === "Szyfrator"
+  ));
+}
+
+function cipherScore() {
+  return Math.max(0, 10 - Number(state.cipherHintsUsed || 0));
+}
 
 function saveState() {
   localStorage.setItem(CONFIG.storageKey, JSON.stringify(state));
@@ -357,6 +373,10 @@ function renderAccess(errorMessage = "") {
     state.pushupResult = null;
     state.pushupPassed = false;
     state.altankaConfirmed = false;
+    state.cipherHintsUsed = 0;
+    state.altankaMatchCount = null;
+    state.altankaMissionCompleted = false;
+    state.bramaConfirmed = false;
     saveState();
     vibrate([40, 25, 90]);
     tone("confirm");
@@ -462,13 +482,36 @@ function renderIdentityReveal(identity) {
 
       ${renderGroomDossier(identity)}
 
+      ${isCipherAgent(identity) ? `
+        <div class="cipher-agent-card">
+          <p class="block-label">SPECJALIZACJA SPECJALNA</p>
+          <h3>SZYFRATOR</h3>
+          <p>Znasz wszystkie kody operacji i możesz udzielać drużynie podpowiedzi.</p>
+          <p>Każda udzielona podpowiedź kosztuje drużynę <strong>1 punkt</strong>.</p>
+          <div class="cipher-score-line">
+            <span>AKTUALNY WYNIK DRUŻYNY</span>
+            <strong>${cipherScore()} / 10</strong>
+          </div>
+          <button class="secondary-button cipher-hint-button" type="button" data-action="use-cipher-hint">Zarejestruj podpowiedź −1 pkt</button>
+        </div>
+      ` : ""}
+
       <div class="actions">
         ${button("Zapamiętałem tożsamość", "accept")}
       </div>
       <p class="microcopy">Nie udostępniaj tego ekranu pozostałym uczestnikom.</p>
     </section>`;
 
-  bindActions({ accept: () => renderBriefing(identity) });
+  bindActions({
+    "use-cipher-hint": () => {
+      if (!isCipherAgent(identity)) return;
+      if (!window.confirm("Zarejestrować udzielenie podpowiedzi? Drużyna straci 1 punkt.")) return;
+      state.cipherHintsUsed = Number(state.cipherHintsUsed || 0) + 1;
+      saveState();
+      vibrate([45, 30, 45]);
+      tone("alert");
+      renderIdentityReveal(identity);
+    }, accept: () => renderBriefing(identity) });
 }
 
 function renderBriefing(identity) {
@@ -598,6 +641,12 @@ function renderOperationIntro(identity) {
           Nie poznacie jednak prawdziwego celu, dopóki wszystkie elementy
           nie znajdą się na swoim miejscu.
         </p>
+
+        <div class="cipher-briefing">
+          <p class="block-label">INFORMACJA OPERACYJNA</p>
+          <p>Wśród Was znajduje się Agent Szyfrator. Zna wszystkie kody operacji i może udzielać podpowiedzi w dowolnym momencie.</p>
+          <p>Każda podpowiedź odbiera drużynie 1 punkt. Liczba utraconych punktów wpłynie na poziom trudności zagadki finałowej.</p>
+        </div>
       </div>
 
       <div class="mission-protocol">
@@ -923,7 +972,8 @@ function renderPushupMission(identity, message = "") {
               <div class="decoded-stamp">LOKALIZACJA POTWIERDZONA</div>
               <p class="block-label">KOLEJNY PUNKT OPERACJI</p>
               <h3>ALTANKA</h3>
-              <p class="location-note">Udajcie się tam całą drużyną. Kolejna misja rozpocznie się na miejscu.</p>
+              <p class="location-note">Po dotarciu całej drużyny rozpocznijcie kolejne zadanie.</p>
+              <button class="primary-button" type="button" data-action="open-altanka-mission">Rozpocznij zadanie w altance</button>
             </div>
           ` : `
             <form class="location-confirm-form" id="altankaLocationForm" autocomplete="off">
@@ -1031,7 +1081,7 @@ function renderPushupMission(identity, message = "") {
         saveState();
         vibrate([45, 25, 45, 25, 110]);
         tone("reveal");
-        renderPushupMission(identity);
+        renderAltankaMission(identity);
         return;
       }
 
@@ -1042,6 +1092,169 @@ function renderPushupMission(identity, message = "") {
     });
 
     setTimeout(() => altankaInput.focus(), 120);
+  }
+
+  bindActions({
+    "open-altanka-mission": () => renderAltankaMission(identity),
+    identity: () => renderIdentityReveal(identity)
+  });
+}
+
+
+function renderAltankaMission(identity, message = "") {
+  state.screen = "altanka-mission";
+  state.altankaConfirmed = true;
+  saveState();
+
+  const completed = state.altankaMissionCompleted;
+  const matches = Number(state.altankaMatchCount ?? -1);
+  let clue = "";
+  let clueLabel = "";
+
+  if (completed) {
+    if (matches <= 2) {
+      clueLabel = "NAJTRUDNIEJSZA PODPOWIEDŹ";
+      clue = "Agenci, fatalna wiadomość, nie zebraliście wystarczających danych o lokalizacji kolejnej misji. Trzeba strzelać. Strzelajcie jak kopacze.";
+    } else if (matches <= 5) {
+      clueLabel = "TRUDNA PODPOWIEDŹ";
+      clue = "Misja na granicy. Tam gdzie z reguły strażnicy.";
+    } else if (matches <= 9) {
+      clueLabel = "ŁATWIEJSZA PODPOWIEDŹ";
+      clue = "Do tego strzelają snajperzy. Tam jest kolejna misja.";
+    } else {
+      clueLabel = "NAJŁATWIEJSZA PODPOWIEDŹ";
+      clue = "Jestem zawsze pomiędzy:\n\ndrogą\n\ni\n\ndomem.";
+    }
+  }
+
+  setStatus(completed ? "MISJA 02 WYKONANA" : "MISJA 02 / ALTANKA");
+
+  screen.innerHTML = `
+    <section class="card altanka-card fade-in accent-border-${identity.accent}">
+      <div class="task-header">
+        <div>
+          <p class="kicker">Misja 02 / Altanka</p>
+          <h2>Protokół zgodności</h2>
+        </div>
+        <div class="task-number">02</div>
+      </div>
+
+      <article class="group-mission ${completed ? "is-complete" : ""}">
+        <div class="mission-classification">
+          <span>ZADANIE ZESPOŁOWE</span>
+          <strong>${completed ? "ZALICZONE" : "AKTYWNE"}</strong>
+        </div>
+
+        <p class="mission-intro">
+          Przygotujcie 10 zdjęć kobiet. Agent GROOM 007 układa je od najładniejszej
+          do najbrzydszej. Pozostali agenci, bez znajomości jego kolejności,
+          wspólnie tworzą własny ranking.
+        </p>
+
+        <div class="altanka-rules">
+          <div><span>01</span><p>GROOM 007 układa ranking samodzielnie.</p></div>
+          <div><span>02</span><p>Pozostali agenci układają wspólny ranking.</p></div>
+          <div><span>03</span><p>Policzcie, ile pozycji pokryło się dokładnie.</p></div>
+        </div>
+
+        ${completed ? `
+          <div class="result-access ${matches === 10 ? "omega" : "standard"}">
+            <span>WYNIK ZGODNOŚCI</span>
+            <strong>${matches} / 10</strong>
+          </div>
+
+          <div class="next-location-riddle">
+            <p class="block-label">${clueLabel}</p>
+            <p class="preserve-lines">${clue}</p>
+          </div>
+
+          ${state.bramaConfirmed ? `
+            <div class="decoded-location">
+              <div class="decoded-stamp">LOKALIZACJA POTWIERDZONA</div>
+              <p class="block-label">KOLEJNY PUNKT OPERACJI</p>
+              <h3>BRAMA WJAZDOWA</h3>
+              <p class="location-note">Lokalizacja została odblokowana.</p>
+            </div>
+          ` : `
+            <form class="location-confirm-form" id="bramaLocationForm" autocomplete="off">
+              <label for="bramaLocationInput">WPISZ NAZWĘ KOLEJNEGO MIEJSCA</label>
+              <input id="bramaLocationInput" name="bramaLocationInput" type="text" maxlength="20"
+                autocapitalize="characters" spellcheck="false" placeholder="________">
+              <button class="primary-button" type="submit">Potwierdź lokalizację</button>
+            </form>
+            <div id="bramaLocationFeedback" class="cipher-feedback"></div>
+          `}
+        ` : `
+          <form class="match-form" id="altankaMatchForm" autocomplete="off">
+            <label for="altankaMatchCount">ILE POZYCJI SIĘ POKRYŁO?</label>
+            <input id="altankaMatchCount" name="altankaMatchCount" type="number"
+              min="0" max="10" inputmode="numeric" placeholder="0–10">
+            <button class="primary-button" type="submit">Zatwierdź wynik</button>
+          </form>
+          <div id="altankaFeedback" class="cipher-feedback ${message ? "is-visible" : ""}">${message}</div>
+        `}
+      </article>
+
+      <div class="cipher-score-banner">
+        <span>PUNKTY DRUŻYNY</span>
+        <strong>${cipherScore()} / 10</strong>
+        <small>Wykorzystane podpowiedzi Szyfratora: ${Number(state.cipherHintsUsed || 0)}</small>
+      </div>
+
+      <div class="actions">
+        ${button("Otwórz profil agenta", "identity", "secondary")}
+      </div>
+    </section>`;
+
+  if (!completed) {
+    const form = document.getElementById("altankaMatchForm");
+    const input = document.getElementById("altankaMatchCount");
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+      const value = Number.parseInt(input.value, 10);
+      if (!Number.isFinite(value) || value < 0 || value > 10) {
+        renderAltankaMission(identity, "Wprowadź wynik od 0 do 10.");
+        return;
+      }
+      state.altankaMatchCount = value;
+      state.altankaMissionCompleted = true;
+      saveState();
+      vibrate([45, 25, 45, 25, 110]);
+      tone("reveal");
+      renderAltankaMission(identity);
+    });
+    setTimeout(() => input.focus(), 120);
+  }
+
+  if (completed && !state.bramaConfirmed) {
+    const form = document.getElementById("bramaLocationForm");
+    const input = document.getElementById("bramaLocationInput");
+    const feedback = document.getElementById("bramaLocationFeedback");
+
+    input.addEventListener("input", event => {
+      event.target.value = event.target.value
+        .toUpperCase()
+        .replace(/[^A-ZĄĆĘŁŃÓŚŹŻ]/g, "")
+        .slice(0, 20);
+    });
+
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+      const answer = input.value.trim().toUpperCase();
+      if (answer === "BRAMA") {
+        state.bramaConfirmed = true;
+        saveState();
+        vibrate([45, 25, 45, 25, 110]);
+        tone("reveal");
+        renderAltankaMission(identity);
+        return;
+      }
+      feedback.classList.add("is-visible");
+      feedback.textContent = "Nieprawidłowa lokalizacja. Spróbuj ponownie.";
+      vibrate([70, 45, 70]);
+      tone("alert");
+    });
+    setTimeout(() => input.focus(), 120);
   }
 
   bindActions({
@@ -1067,6 +1280,7 @@ function renderResume(identity) {
   bindActions({
     continue: () => {
       if (state.courtReached) renderPushupMission(identity);
+      else if (state.altankaConfirmed) renderAltankaMission(identity);
       else if (state.courtReached) renderPushupMission(identity);
       else if (state.firstTaskOpened || state.operationIntroAccepted) renderFirstTask(identity);
       else if (state.readyConfirmed) renderOperationIntro(identity);
@@ -1121,6 +1335,10 @@ function resetIdentity() {
     pushupResult: null,
     pushupPassed: false,
     altankaConfirmed: false,
+    cipherHintsUsed: 0,
+    altankaMatchCount: null,
+    altankaMissionCompleted: false,
+    bramaConfirmed: false,
     sound: true
   });
   soundIcon.textContent = "◖";
@@ -1136,7 +1354,7 @@ renderBoot();
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
     try {
-      const registration = await navigator.serviceWorker.register("./service-worker.js?v=043", {
+      const registration = await navigator.serviceWorker.register("./service-worker.js?v=044", {
         updateViaCache: "none"
       });
       await registration.update();
