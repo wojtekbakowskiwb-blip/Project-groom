@@ -1257,7 +1257,3 @@ h2 { font-size: clamp(31px, 8vw, 55px); letter-spacing: -.027em; }
     padding: 0 6px;
   }
 }
-
-.global-game-menu button[hidden] {
-  display: none;
-}
