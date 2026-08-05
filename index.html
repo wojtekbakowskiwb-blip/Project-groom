@@ -207,7 +207,7 @@ function setupGlobalMenu() {
 }
 
 function renderExitScreen() {
-  const identity = getCurrentIdentity();
+  const identity = currentIdentity();
   setStatus("SESJA WSTRZYMANA");
 
   screen.innerHTML = `
@@ -238,7 +238,7 @@ setupGlobalMenu();
 }
 
 function renderMapScreen() {
-  const identity = getCurrentIdentity();
+  const identity = currentIdentity();
   if (!identity) {
     renderAccess();
     return;
@@ -1478,7 +1478,7 @@ renderBoot();
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
     try {
-      const registration = await navigator.serviceWorker.register("./service-worker.js?v=045", {
+      const registration = await navigator.serviceWorker.register("./service-worker.js?v=046", {
         updateViaCache: "none"
       });
       await registration.update();

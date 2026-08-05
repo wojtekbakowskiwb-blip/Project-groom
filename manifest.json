@@ -11,7 +11,7 @@
   <title>Project Groom</title>
   <link rel="manifest" href="manifest.json?v=023" />
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
-  <link rel="stylesheet" href="styles.css?v=045" />
+  <link rel="stylesheet" href="styles.css?v=046" />
 </head>
 <body>
   <div id="globalGameMenu" class="global-game-menu" hidden>
@@ -47,6 +47,20 @@
   </div>
 
   <noscript>Ta aplikacja wymaga włączonego JavaScriptu.</noscript>
-  <script src="app.js?v=045"></script>
+  <script>
+    (function () {
+      var key = "project-groom-cache-recovery-v046";
+      if (localStorage.getItem(key)) return;
+      localStorage.setItem(key, "1");
+      if ("caches" in window) {
+        caches.keys().then(function (keys) {
+          return Promise.all(keys.filter(function (name) {
+            return name.indexOf("project-groom-") === 0;
+          }).map(function (name) { return caches.delete(name); }));
+        });
+      }
+    }());
+  </script>
+  <script src="app.js?v=046"></script>
 </body>
 </html>
