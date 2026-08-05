@@ -1,29 +1,37 @@
 <!doctype html>
 <html lang="pl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Project Groom — kody do druku</title>
-<style>
-  *{box-sizing:border-box}body{margin:0;background:#ece9e1;color:#161511;font-family:Arial,sans-serif}.toolbar{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 18px;background:#111;color:#eee}.toolbar p{margin:0;font-size:13px}.toolbar button{border:0;border-radius:999px;padding:11px 18px;background:#d2b36f;color:#16120a;font-weight:800;cursor:pointer}.sheet{width:210mm;min-height:297mm;margin:14px auto;padding:10mm;background:#fff;display:grid;grid-template-columns:1fr 1fr;gap:7mm}.ticket{position:relative;min-height:49mm;padding:8mm;border:1px solid #bda56f;background:linear-gradient(145deg,#1d1c18,#0e0f0f);color:#eee;overflow:hidden;break-inside:avoid}.ticket:before{content:"";position:absolute;inset:5px;border:1px solid rgba(210,179,111,.25);pointer-events:none}.ticket:after{content:"◆";position:absolute;right:8mm;top:7mm;color:#d2b36f;font-size:18px}.eyebrow{font-size:7px;letter-spacing:.23em;color:#aaa49a}.ticket h2{margin:7mm 0 2mm;font:600 20px Georgia,serif;letter-spacing:.03em}.code{display:inline-block;padding:3mm 4mm;border:1px solid #d2b36f;color:#f0d793;background:#090909;font:700 18px ui-monospace,monospace;letter-spacing:.08em}.instruction{margin:5mm 0 0;color:#bbb5aa;font-size:9px;line-height:1.45}.number{position:absolute;right:8mm;bottom:7mm;color:#777;font-size:8px;letter-spacing:.15em}.groom{border:2px solid #d2b36f}.groom .organizer{display:block;margin-top:4mm;color:#e4c980;font-size:8px;font-weight:800;letter-spacing:.12em}.footer-note{grid-column:1/-1;padding-top:2mm;text-align:center;color:#777;font-size:8px}
-  @media print{body{background:#fff}.toolbar{display:none}.sheet{margin:0;padding:10mm;box-shadow:none;gap:7mm}.ticket{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
-  @media(max-width:800px){.sheet{width:auto;min-height:0;margin:0;padding:14px;grid-template-columns:1fr}.footer-note{grid-column:auto}}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Project Groom — naprawa</title>
+  <style>
+    body { margin:0; min-height:100vh; display:grid; place-items:center; background:#070b0f; color:#eee; font-family:Arial,sans-serif; }
+    main { width:min(520px,calc(100% - 32px)); padding:28px; border:1px solid #6d5b35; background:#101417; }
+    button { width:100%; min-height:52px; border:1px solid #d4b772; background:#d4b772; color:#080b0d; font-weight:700; }
+    p { color:#aaa; line-height:1.55; }
+  </style>
 </head>
 <body>
-<div class="toolbar"><p>Wydrukuj w skali 100%. Wytnij karty i złóż kodem do środka.</p><button onclick="window.print()">Drukuj 10 kodów</button></div>
-<main class="sheet">
-  <article class="ticket groom"><span class="eyebrow">PROJECT GROOM / DOSTĘP INDYWIDUALNY</span><h2>KOD PANA MŁODEGO</h2><div class="code">GROOM-007</div><span class="organizer">NIE WKŁADAĆ DO LOSOWANIA — PRZEKAZAĆ PANU MŁODEMU</span><p class="instruction">Wejdź na stronę aplikacji i wpisz kod dokładnie tak, jak widzisz go na karcie.</p><span class="number">KARTA 01/10</span></article>
-  <article class="ticket"><span class="eyebrow">PROJECT GROOM / DOSTĘP INDYWIDUALNY</span><h2>TAJNY KOD OPERACYJNY</h2><div class="code">ATLAS-314</div><p class="instruction">Nie pokazuj kodu innym. Wpisz go na pierwszym ekranie aplikacji, aby poznać swoją nową tożsamość.</p><span class="number">KARTA 02/10</span></article>
-  <article class="ticket"><span class="eyebrow">PROJECT GROOM / DOSTĘP INDYWIDUALNY</span><h2>TAJNY KOD OPERACYJNY</h2><div class="code">CIPHER-82</div><p class="instruction">Nie pokazuj kodu innym. Wpisz go na pierwszym ekranie aplikacji, aby poznać swoją nową tożsamość.</p><span class="number">KARTA 03/10</span></article>
-  <article class="ticket"><span class="eyebrow">PROJECT GROOM / DOSTĘP INDYWIDUALNY</span><h2>TAJNY KOD OPERACYJNY</h2><div class="code">ECHO-441</div><p class="instruction">Nie pokazuj kodu innym. Wpisz go na pierwszym ekranie aplikacji, aby poznać swoją nową tożsamość.</p><span class="number">KARTA 04/10</span></article>
-  <article class="ticket"><span class="eyebrow">PROJECT GROOM / DOSTĘP INDYWIDUALNY</span><h2>TAJNY KOD OPERACYJNY</h2><div class="code">HAWK-905</div><p class="instruction">Nie pokazuj kodu innym. Wpisz go na pierwszym ekranie aplikacji, aby poznać swoją nową tożsamość.</p><span class="number">KARTA 05/10</span></article>
-  <article class="ticket"><span class="eyebrow">PROJECT GROOM / DOSTĘP INDYWIDUALNY</span><h2>TAJNY KOD OPERACYJNY</h2><div class="code">LEDGER-19</div><p class="instruction">Nie pokazuj kodu innym. Wpisz go na pierwszym ekranie aplikacji, aby poznać swoją nową tożsamość.</p><span class="number">KARTA 06/10</span></article>
-  <article class="ticket"><span class="eyebrow">PROJECT GROOM / DOSTĘP INDYWIDUALNY</span><h2>TAJNY KOD OPERACYJNY</h2><div class="code">NEXUS-623</div><p class="instruction">Nie pokazuj kodu innym. Wpisz go na pierwszym ekranie aplikacji, aby poznać swoją nową tożsamość.</p><span class="number">KARTA 07/10</span></article>
-  <article class="ticket"><span class="eyebrow">PROJECT GROOM / DOSTĘP INDYWIDUALNY</span><h2>TAJNY KOD OPERACYJNY</h2><div class="code">ORACLE-56</div><p class="instruction">Nie pokazuj kodu innym. Wpisz go na pierwszym ekranie aplikacji, aby poznać swoją nową tożsamość.</p><span class="number">KARTA 08/10</span></article>
-  <article class="ticket"><span class="eyebrow">PROJECT GROOM / DOSTĘP INDYWIDUALNY</span><h2>TAJNY KOD OPERACYJNY</h2><div class="code">RAVEN-208</div><p class="instruction">Nie pokazuj kodu innym. Wpisz go na pierwszym ekranie aplikacji, aby poznać swoją nową tożsamość.</p><span class="number">KARTA 09/10</span></article>
-  <article class="ticket"><span class="eyebrow">PROJECT GROOM / DOSTĘP INDYWIDUALNY</span><h2>TAJNY KOD OPERACYJNY</h2><div class="code">WARDEN-73</div><p class="instruction">Nie pokazuj kodu innym. Wpisz go na pierwszym ekranie aplikacji, aby poznać swoją nową tożsamość.</p><span class="number">KARTA 10/10</span></article>
-  <div class="footer-note">PROJECT GROOM // MATERIAŁ ORGANIZATORA // v0.2</div>
-</main>
+  <main>
+    <h1>Naprawa aplikacji</h1>
+    <p>Ten ekran usuwa stary Service Worker i wszystkie zapisane pliki aplikacji.</p>
+    <button id="repair">NAPRAW I OTWÓRZ GRĘ</button>
+  </main>
+  <script>
+    document.getElementById("repair").onclick = async function () {
+      try {
+        if ("serviceWorker" in navigator) {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          await Promise.all(registrations.map(r => r.unregister()));
+        }
+        if ("caches" in window) {
+          const keys = await caches.keys();
+          await Promise.all(keys.map(k => caches.delete(k)));
+        }
+      } finally {
+        location.replace("./?v=047");
+      }
+    };
+  </script>
 </body>
 </html>
