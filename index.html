@@ -1,67 +1,76 @@
-# Project Groom — historia wersji
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0c0d" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Project Groom" />
+  <meta name="description" content="Project Groom — zabezpieczona aplikacja terenowa." />
+  <title>Project Groom</title>
+  <link rel="manifest" href="manifest.json?v=023" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="styles.css?v=048" />
+</head>
+<body>
+  <div id="globalGameMenu" class="global-game-menu" hidden>
+    <button type="button" data-global-action="map" aria-label="Otwórz mapę">MAPA</button>
+    <button type="button" data-global-action="change-player" aria-label="Zmień gracza">ZMIEŃ GRACZA</button>
+    <button type="button" data-global-action="exit-game" aria-label="Wyjdź z gry">WYJDŹ</button>
+  </div>
 
-## v0.4.0
-- Dodano pełne wprowadzenie do operacji po potwierdzeniu gotowości.
-- Dodano transmisję M skierowaną indywidualnie do każdego agenta.
-- Dodano zasady operacji i informację o tajnym celu.
-- Zachowano zagadkę Indiana Jones oraz wskazówkę prowadzącą na kort.
-- Zaktualizowano cache aplikacji do v0.4.0.
+  <div id="app" class="app-shell">
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+    <div class="grain"></div>
 
-## v0.4.1
-- Dodano potwierdzenie dotarcia na kort bez skanowania QR.
-- Dodano zespołowe zadanie z pompkami.
-- Minimalny wynik to 0100.
-- Wynik 0100–0149 odblokowuje trudniejszą podpowiedź.
-- Wynik 0150 lub wyższy odblokowuje łatwiejszą podpowiedź.
-- Dodano zapis wyniku i postępu na urządzeniu.
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">◆</span>
+        <div>
+          <span class="eyebrow">ARCHIWUM TERENOWE</span>
+          <strong>PROJECT GROOM</strong>
+        </div>
+      </div>
+      <button id="soundToggle" class="icon-button" aria-label="Włącz lub wyłącz dźwięk" aria-pressed="true">
+        <span id="soundIcon">◖</span>
+      </button>
+    </header>
 
-## v0.4.2
-- Usunięto rozwiązanie „ALT + ANKA”.
-- Wynik 0150+ pokazuje dokładną łatwiejszą zagadkę wskazaną przez autora.
-- Wynik 0100–0149 pokazuje trudniejszą, bardziej zaszyfrowaną wersję.
-- Zaktualizowano cache aplikacji.
+    <main id="screen" class="screen" aria-live="polite"></main>
 
-## v0.4.3
-- Po zagadce Indiana Jones każdy wpisuje KORT.
-- Dopiero poprawna odpowiedź uruchamia zadanie z pompkami.
-- Po zadaniu z pompkami każdy wpisuje ALTANKA.
-- Poprawiono treść łatwiejszej zagadki zgodnie z wytycznymi autora.
-- Dodano zapis potwierdzenia obu lokalizacji.
+    <footer class="footer">
+      <span id="statusText">SYSTEM GOTOWY</span>
+      <span id="clock">--:--</span>
+    </footer>
+  </div>
 
-## v0.4.4
-- Dodano rolę Agenta Szyfratora.
-- Dodano system punktów za podpowiedzi.
-- Dodano zadanie w altance z rankingiem 10 zdjęć.
-- Dodano 4 poziomy wskazówek zależne od wyniku.
-- Dodano obowiązkowe wpisanie BRAMA.
+  <noscript>Ta aplikacja wymaga włączonego JavaScriptu.</noscript>
+  
+  <script>
+    (function () {
+      try {
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker.getRegistrations().then(function (registrations) {
+            return Promise.all(registrations.map(function (registration) {
+              return registration.unregister();
+            }));
+          });
+        }
 
-## v0.4.5
-- Dodano stałe menu dostępne podczas gry.
-- Dodano opcję wyjścia z gry z zachowaniem postępu.
-- Dodano opcję zmiany gracza.
-- Dodano ekran mapy operacji.
-- Dodano miejsce na plik assets/mapa-operacji.jpg.
-
-## v0.4.6
-- Naprawiono błąd, przez który kod JavaScript mógł wyświetlać się jako strona.
-- Poprawiono cache i obsługę nawigacji GitHub Pages.
-- Poprawiono działanie Mapy, Wyjścia i Zmiany gracza.
-- Dodano jednorazowe czyszczenie uszkodzonej pamięci podręcznej.
-
-## v0.4.7
-- Całkowicie wyłączono Service Workera.
-- Dodano automatyczne czyszczenie wszystkich starych cache.
-- Przeniesiono aplikację do nowego pliku game-v047.js.
-- Dodano awaryjną stronę napraw.html.
-- Zachowano wszystkie funkcje gry z v0.4.6.
-
-## v0.4.8
-- Zmieniono „Kamiś” na „Kamis”.
-- Wszystkie komunikaty operacyjne pochodzą teraz od W.
-- Szyfrator jest stałą rolą organizatora i nie bierze udziału w losowaniu.
-- Kod Szyfratora pozostaje CIPHER-82.
-- Przycisk Mapa jest widoczny na każdym ekranie, również przed wyborem gracza.
-
-## v0.4.9
-- Mapa została zapisana jako prawdziwy plik JPEG.
-- Dokładna ścieżka: assets/mapa-operacji.jpg.
+        if ("caches" in window) {
+          caches.keys().then(function (keys) {
+            return Promise.all(keys.map(function (key) {
+              return caches.delete(key);
+            }));
+          });
+        }
+      } catch (error) {
+        console.warn("Cache recovery:", error);
+      }
+    }());
+  </script>
+  <script src="game-v048.js?v=048"></script>
+</body>
+</html>
