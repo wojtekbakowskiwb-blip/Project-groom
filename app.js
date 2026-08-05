@@ -140,8 +140,10 @@ const state = {
   firstTaskCompleted: false,
   firstTaskAttempts: 0,
   courtReached: false,
+  courtConfirmed: false,
   pushupResult: null,
   pushupPassed: false,
+  altankaConfirmed: false,
   sound: true
 };
 
@@ -351,8 +353,10 @@ function renderAccess(errorMessage = "") {
     state.firstTaskCompleted = false;
     state.firstTaskAttempts = 0;
     state.courtReached = false;
+    state.courtConfirmed = false;
     state.pushupResult = null;
     state.pushupPassed = false;
+    state.altankaConfirmed = false;
     saveState();
     vibrate([40, 25, 90]);
     tone("confirm");
@@ -739,8 +743,24 @@ function renderFirstTask(identity, message = "") {
         </div>
       ` : ""}
 
+      ${completed ? `
+        <form class="location-confirm-form" id="courtLocationForm" autocomplete="off">
+          <label for="courtLocationInput">WPISZ NAZWĘ MIEJSCA</label>
+          <input
+            id="courtLocationInput"
+            name="courtLocationInput"
+            type="text"
+            maxlength="20"
+            autocapitalize="characters"
+            spellcheck="false"
+            placeholder="________"
+          >
+          <button class="primary-button" type="submit">Potwierdź lokalizację</button>
+        </form>
+        <div id="courtLocationFeedback" class="cipher-feedback"></div>
+      ` : ""}
+
       <div class="actions">
-        ${completed ? button("Jesteśmy na miejscu", "court-ready") : ""}
         ${button("Otwórz profil agenta", "identity", "secondary")}
       </div>
     </section>`;
@@ -784,14 +804,42 @@ function renderFirstTask(identity, message = "") {
     setTimeout(() => input.focus(), 120);
   }
 
+  if (completed) {
+    const courtForm = document.getElementById("courtLocationForm");
+    const courtInput = document.getElementById("courtLocationInput");
+    const courtFeedback = document.getElementById("courtLocationFeedback");
+
+    courtInput.addEventListener("input", event => {
+      event.target.value = event.target.value
+        .toUpperCase()
+        .replace(/[^A-ZĄĆĘŁŃÓŚŹŻ]/g, "")
+        .slice(0, 20);
+    });
+
+    courtForm.addEventListener("submit", event => {
+      event.preventDefault();
+      const answer = courtInput.value.trim().toUpperCase();
+
+      if (answer === "KORT") {
+        state.courtReached = true;
+        state.courtConfirmed = true;
+        saveState();
+        vibrate([35, 25, 80]);
+        tone("confirm");
+        renderPushupMission(identity);
+        return;
+      }
+
+      courtFeedback.classList.add("is-visible");
+      courtFeedback.textContent = "Nieprawidłowa lokalizacja. Rozwiąż zagadkę i spróbuj ponownie.";
+      vibrate([70, 45, 70]);
+      tone("alert");
+    });
+
+    setTimeout(() => courtInput.focus(), 120);
+  }
+
   bindActions({
-    "court-ready": () => {
-      state.courtReached = true;
-      saveState();
-      vibrate([35, 25, 80]);
-      tone("confirm");
-      renderPushupMission(identity);
-    },
     identity: () => renderIdentityReveal(identity)
   });
 }
@@ -848,7 +896,7 @@ function renderPushupMission(identity, message = "") {
                 <br><br>
                 Jak w Puerto Rico...
                 <br><br>
-                Aby się zresetować potrzebujesz Control, [...] i Delete.
+                Aby się zresetować, musisz się kontrolować, [...] i usunąć w cień.
                 <br><br>
                 Aby poznać docelowe miejsce, przyda się również WAG naszego snajpera.
               </p>
@@ -869,6 +917,30 @@ function renderPushupMission(identity, message = "") {
               <strong>Wskazówka do kolejnej lokalizacji została odblokowana</strong>
             </div>
           </div>
+
+          ${state.altankaConfirmed ? `
+            <div class="decoded-location">
+              <div class="decoded-stamp">LOKALIZACJA POTWIERDZONA</div>
+              <p class="block-label">KOLEJNY PUNKT OPERACJI</p>
+              <h3>ALTANKA</h3>
+              <p class="location-note">Udajcie się tam całą drużyną. Kolejna misja rozpocznie się na miejscu.</p>
+            </div>
+          ` : `
+            <form class="location-confirm-form" id="altankaLocationForm" autocomplete="off">
+              <label for="altankaLocationInput">WPISZ NAZWĘ KOLEJNEGO MIEJSCA</label>
+              <input
+                id="altankaLocationInput"
+                name="altankaLocationInput"
+                type="text"
+                maxlength="20"
+                autocapitalize="characters"
+                spellcheck="false"
+                placeholder="________"
+              >
+              <button class="primary-button" type="submit">Potwierdź lokalizację</button>
+            </form>
+            <div id="altankaLocationFeedback" class="cipher-feedback"></div>
+          `}
         ` : `
           <form class="pushup-form" id="pushupForm" autocomplete="off">
             <label for="pushupCount">ŁĄCZNA LICZBA POMPEK</label>
@@ -936,6 +1008,40 @@ function renderPushupMission(identity, message = "") {
     });
 
     setTimeout(() => input.focus(), 120);
+  }
+
+  if (passed && !state.altankaConfirmed) {
+    const altankaForm = document.getElementById("altankaLocationForm");
+    const altankaInput = document.getElementById("altankaLocationInput");
+    const altankaFeedback = document.getElementById("altankaLocationFeedback");
+
+    altankaInput.addEventListener("input", event => {
+      event.target.value = event.target.value
+        .toUpperCase()
+        .replace(/[^A-ZĄĆĘŁŃÓŚŹŻ]/g, "")
+        .slice(0, 20);
+    });
+
+    altankaForm.addEventListener("submit", event => {
+      event.preventDefault();
+      const answer = altankaInput.value.trim().toUpperCase();
+
+      if (answer === "ALTANKA") {
+        state.altankaConfirmed = true;
+        saveState();
+        vibrate([45, 25, 45, 25, 110]);
+        tone("reveal");
+        renderPushupMission(identity);
+        return;
+      }
+
+      altankaFeedback.classList.add("is-visible");
+      altankaFeedback.textContent = "Nieprawidłowa lokalizacja. Połącz oba tropy i spróbuj ponownie.";
+      vibrate([70, 45, 70]);
+      tone("alert");
+    });
+
+    setTimeout(() => altankaInput.focus(), 120);
   }
 
   bindActions({
@@ -1011,8 +1117,10 @@ function resetIdentity() {
     firstTaskCompleted: false,
     firstTaskAttempts: 0,
     courtReached: false,
+    courtConfirmed: false,
     pushupResult: null,
     pushupPassed: false,
+    altankaConfirmed: false,
     sound: true
   });
   soundIcon.textContent = "◖";
@@ -1028,7 +1136,7 @@ renderBoot();
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
     try {
-      const registration = await navigator.serviceWorker.register("./service-worker.js?v=042", {
+      const registration = await navigator.serviceWorker.register("./service-worker.js?v=043", {
         updateViaCache: "none"
       });
       await registration.update();

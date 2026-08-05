@@ -20,3 +20,10 @@
 - Wynik 0150+ pokazuje dokładną łatwiejszą zagadkę wskazaną przez autora.
 - Wynik 0100–0149 pokazuje trudniejszą, bardziej zaszyfrowaną wersję.
 - Zaktualizowano cache aplikacji.
+
+## v0.4.3
+- Po zagadce Indiana Jones każdy wpisuje KORT.
+- Dopiero poprawna odpowiedź uruchamia zadanie z pompkami.
+- Po zadaniu z pompkami każdy wpisuje ALTANKA.
+- Poprawiono treść łatwiejszej zagadki zgodnie z wytycznymi autora.
+- Dodano zapis potwierdzenia obu lokalizacji.
