@@ -1,7 +1,7 @@
 {
   "name": "Project Groom — Gra terenowa",
   "short_name": "Project Groom",
-  "description": "Project Groom v0.4.8 — Kamis, komunikaty W, stały Szyfrator i mapa dostępna zawsze.",
+  "description": "Project Groom v0.4.7 — wersja naprawcza bez Service Workera.",
   "start_url": "./?v=021",
   "scope": "./",
   "display": "standalone",
