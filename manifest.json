@@ -1,27 +1,52 @@
-{
-  "name": "Project Groom — Gra terenowa",
-  "short_name": "Project Groom",
-  "description": "Project Groom — Szyfrator, punkty podpowiedzi i misja w altance.",
-  "start_url": "./?v=021",
-  "scope": "./",
-  "display": "standalone",
-  "background_color": "#0b0c0d",
-  "theme_color": "#0b0c0d",
-  "orientation": "portrait",
-  "lang": "pl",
-  "icons": [
-    {
-      "src": "icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ],
-  "id": "./?v=021"
-}
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0c0d" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Project Groom" />
+  <meta name="description" content="Project Groom — zabezpieczona aplikacja terenowa." />
+  <title>Project Groom</title>
+  <link rel="manifest" href="manifest.json?v=023" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="styles.css?v=045" />
+</head>
+<body>
+  <div id="globalGameMenu" class="global-game-menu" hidden>
+    <button type="button" data-global-action="map" aria-label="Otwórz mapę">MAPA</button>
+    <button type="button" data-global-action="change-player" aria-label="Zmień gracza">ZMIEŃ GRACZA</button>
+    <button type="button" data-global-action="exit-game" aria-label="Wyjdź z gry">WYJDŹ</button>
+  </div>
+
+  <div id="app" class="app-shell">
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+    <div class="grain"></div>
+
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">◆</span>
+        <div>
+          <span class="eyebrow">ARCHIWUM TERENOWE</span>
+          <strong>PROJECT GROOM</strong>
+        </div>
+      </div>
+      <button id="soundToggle" class="icon-button" aria-label="Włącz lub wyłącz dźwięk" aria-pressed="true">
+        <span id="soundIcon">◖</span>
+      </button>
+    </header>
+
+    <main id="screen" class="screen" aria-live="polite"></main>
+
+    <footer class="footer">
+      <span id="statusText">SYSTEM GOTOWY</span>
+      <span id="clock">--:--</span>
+    </footer>
+  </div>
+
+  <noscript>Ta aplikacja wymaga włączonego JavaScriptu.</noscript>
+  <script src="app.js?v=045"></script>
+</body>
+</html>
